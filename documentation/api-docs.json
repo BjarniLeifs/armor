@@ -1,0 +1,423 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Maelirekstarkerfid Trausti, Vedurstofa Islands",
+    "description": "Yfirlit um vefþjónustu Trausta",
+    "termsOfService": "http://vedurstofa.is"
+  },
+  "basePath": "/",
+  "tags" : [
+    {"name": "Item", 
+    "description": "API for Item"
+    },
+    {"name": "Users", 
+    "description": "API for Users"
+    },
+    {"name": "Admin", 
+    "description": "API for Item"
+    },
+    {"name": "Antenna", 
+    "description": "API for Users"
+    },
+    {"name": "Area", 
+    "description": "API for Item"
+    },
+    {"name": "Contacts", 
+    "description": "API for Users"
+    },
+    {"name": "Fileupload", 
+    "description": "API for Item"
+    },
+    {"name": "Landscape", 
+    "description": "API for Users"
+    },
+    {"name": "Network", 
+    "description": "API for Item"
+    },
+    {"name": "Power Generation Type", 
+    "description": "API for Users"
+    },
+    {"name": "Search", 
+    "description": "API for Item"
+    },
+    {"name": "Station", 
+    "description": "API for Users"
+    },
+    {"name": "Station Comments", 
+    "description": "API for Item"
+    },
+    {"name": "Station Item", 
+    "description": "API for Users"
+    },
+    {"name": "Station Visit", 
+    "description": "API for Item"
+    },
+    {"name": "Status", 
+    "description": "API for Users"
+    },
+    {"name": "Surrounding", 
+    "description": "API for Item"
+    },
+    {"name": "Type", 
+    "description": "API for Users"
+    },
+    {"name": "Zone", 
+    "description": "API for Item"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/addItem": {
+       "post": {
+          "tags": ["Item"],
+          "description": "Adds new item to database",
+          "operationId": "for the URL",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+              {
+                "name": "item Parameters",
+                "in": "body",
+                "description": "Item to add to the database",
+                "required": true,
+              "schema": {
+                "$ref": "#/definitions/create"
+                }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "create response",
+              "schema": {
+                 "$ref": "#/definitions/create"
+              }
+            }
+          }
+        }
+    },
+    "/updateItem/": {
+        "put":{
+          "tags":["Item"],
+          "description":"Updates Item in database",
+          "operationId":"update",
+          "produces": [
+            "application/json"
+          ],
+          "parameters":[
+              {
+                "name": "Item Parameters",
+                "in": "body",
+                "description": "item to update",
+                "required": true,
+                "schema": {
+                  "$ref": "#/definitions/updateitem"
+                }
+              }
+            ],
+          "responses": {
+            "200": {
+              "description": "update response",
+              "schema":{
+                "$ref":"#/definitions/updateitem"
+              }
+            }
+          }
+        }
+      },
+    "/getItemById/{id}": {
+      "get":{
+          "tags": [ "Item"],
+          "description": "Returns the item with ID",
+          "operationId": "findById",
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+              {
+                "name": "ID",
+                "in": "path",
+                "description": "ID to fetch",
+                "required": true,
+                "type": "integer"
+              }
+            ],
+        "responses": {
+            "200": {
+              "description": "response",
+              "schema": {
+                "$ref": "#/definitions/getitembyid"
+              }
+            }
+          }
+        }
+      },
+      "/getAllUsers": {
+      "get":{
+          "tags": [ "Users"],
+          "description": "Returns all users",
+          "operationId": "",
+          "produces": [
+            "application/json"
+          ],
+        "responses": {
+            "200": {
+              "description": "response",
+              "schema": {
+                "$ref": "#/definitions/gettallusers"
+              }
+            }
+          }
+        }
+      }
+  },
+  "definitions": {
+    "create": {
+      "properties": {
+        "idItemType": {
+              "required": true,
+              "type" : "integer",
+              "example" : "2"
+            },
+            "idProducer": {
+              "required": true,
+              "type" : "integer",
+              "example" : "3"
+            },
+            "idOwner": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            },
+            "comment": {
+              "required": true,
+              "type" : "string",
+              "example" : "Comment"
+            },
+            "idItemStatus": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            },
+            "imageUrl": {
+              "required": true,
+              "type" : "string",
+              "example" : "/path/to/image.png"
+            }
+      }
+    },
+    "updateitem": {
+      "properties": {
+        "item_type": {
+              "required": true,
+              "type" : "integer",
+              "example" : "2"
+            },
+            "producer": {
+              "required": true,
+              "type" : "integer",
+              "example" : "3"
+            },
+            "owner": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            },
+            "comment": {
+              "required": true,
+              "type" : "string",
+              "example" : "Comment"
+            },
+            "item_status": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            },
+            "imgurl": {
+              "required": true,
+              "type" : "string",
+              "example" : "/path/to/image.png"
+            },
+            "station": {
+              "required": true,
+              "type" : "integer",
+              "example" : "2"
+            },
+            "id": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            }
+
+      }
+    },
+    "getitembyid": {
+        "properties": {
+          "id": {
+            "required":true,
+            "type": "integer",
+            "example": "1"
+          },
+          "item_type": {
+            "required":true,
+            "type": "string",
+            "example": "Antenna"
+          },
+          "producer": {
+            "required":true,
+            "type": "string",
+            "example": "Veðurstofan"
+          },
+          "owner": {
+            "required":true,
+            "type": "string",
+            "example": "Háskólinn í Reykjavík"
+          },
+          "comment": {
+            "required":true,
+            "type": "string",
+            "example": "Háskóli í Reykjavík á þetta Tæki"
+          },
+          "item_status": {
+            "required":true,
+            "type": "string",
+            "example": "Í notkun"
+          },
+          "imageurl": {
+            "required":true,
+            "type": "string",
+            "example": "/path/images/image.jpg"
+          },
+          "station": {
+            "required":true,
+            "type": "string",
+            "example": "Grímsey"
+          },
+          "stationID": {
+            "required":true,
+            "type": "integer",
+            "example": "4"
+          }
+      }
+    },
+    "gettallusers" : {
+      "properties" : {
+      "username": {
+            "required":true,
+            "type": "string",
+            "example": "Admin"
+          },
+          "name": {
+            "required":true,
+            "type": "string",
+            "example": "Jón Jónsson"
+          },
+          "role": {
+            "required":true,
+            "type": "string",
+            "example": "Admin"
+          },
+          "company": {
+            "required":true,
+            "type": "string",
+            "example": "Veðurstofa Íslands"
+          },
+          "email": {
+            "required":true,
+            "type": "string",
+            "example": "jon@vedur.is"
+          },
+          "address": {
+            "required":true,
+            "type": "string",
+            "example": "Bústaðavegur 7-9"
+          },
+          "comments": {
+            "required":true,
+            "type": "string",
+            "example": "Framkvæmdarstjóri Veðurstofu Íslands"
+          },
+          "phone": {
+            "required":true,
+            "type": "string",
+            "example": "1234567"
+          },
+          "id": {
+            "required":true,
+            "type": "integer",
+            "example": "1"
+          },
+          "imageurl": {
+            "required":true,
+            "type": "string",
+            "example": "/path/to/image.jpg"
+          }
+        }
+    },
+    "response": {
+        "properties": {
+            "item_type": {
+              "required": true,
+              "type" : "integer",
+              "example" : "2"
+            },
+            "producer": {
+              "required": true,
+              "type" : "integer",
+              "example" : "3"
+            },
+            "owner": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            },
+            "comment": {
+              "required": true,
+              "type" : "string",
+              "example" : "1"
+            },
+            "status": {
+              "required": true,
+              "type" : "integer",
+              "example" : "1"
+            },
+            "imgurl": {
+              "required": true,
+              "type" : "string",
+              "example" : "/path/to/image.png"
+            }
+        }
+    },
+    "delete": {
+        "properties": {
+            "jobID": {
+              "required": true,
+              "type" : "string",
+              "example" : "234344234234"
+            },
+            "status" : {
+              "required": true,
+              "type": "string",
+              "example": "deleted"
+            }
+        }
+    },
+    "400error" : {
+       "properties": {
+        "message": {
+          "type": "string",
+          "example" : "400 Bad Request"
+        }
+      }
+    }
+  }
+}
