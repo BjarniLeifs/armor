@@ -2,9 +2,9 @@ var exports = module.exports = {};
 
 var pg = require('pg');
 /* Definging configuration of database config */
-var config = require('../../config/configuration');
+var config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-var connectionString = process.env.DATABASE_URL ||  db.connectionUrl;
+var connectionString = process.env.DATABASE_URL ||  config.connectionUrl;
 
 /* Query to get all */
 exports.queryString = function (string, cb) {

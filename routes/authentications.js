@@ -4,14 +4,27 @@ var router = express.Router();
 /* Definging postgressSQL module */
 var pg = require('pg');
 /* Definging configuration of database config */
-var db = require('../../config/configuration');
+var config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-var connectionString = process.env.DATABASE_URL || db.connectionUrl;
+var connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
 
-var service = requrie('./../library/dbLibrary');
-var dateService = requrie('./../library/dates');
+var service  	= require('./../library/dbLibrary');
+var dateService = require('./../library/dates');
 var authService = require('./../library/users');
+
+router.get('/users', function (req, res, next) {
+	var table = 'users';
+	var string = 'SELECT * FROM ' +table;
+	helper = service.queryString(string, function (err, result) {
+		if (result) {
+			return res.status(200).json(result);
+		} else {
+			return res.status(400).json({message: 'Error running query to '+ table});
+		}
+	});
+	
+});
 
 router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
@@ -23,8 +36,10 @@ router.post('/register', function (req, res, next) {
 	var table = 'users';
 	var string = 'select * from ' + table +' WHERE username = ($1)';
 	/* Calling for that user if exist it prompt the result else insert into database. */
-	helper = service.queryStringValue(string,resUser, 
+	helper = service.queryStringValue(string, resUser, 
 		function (err, result) {
+			console.log(result);
+
 			if (result.length < 1) {
 				/* Defining the string to pass to helper for insert */
 				var stringAdd = 'INSERT INTO users (username, name, email, hash, salt)';
@@ -108,7 +123,7 @@ router.post('/forgotPassword', function (req, res, next) {
 					tokenExpire : dateService.dateAddMin(60)
 				};
 
-				var stringUpdate = 'UPDATE users SET reset_token = ($1), token_expired = ($2) WHERE id = ($3)';
+				var stringUpdate = 'UPDATE users SET resettoken = ($1), tokenexpired = ($2) WHERE id = ($3)';
 				var valueUpdate = [newToken.token, newToken.tokenExpire, objectResult.id];
 				
 				var update = service.queryStringValue(stringUpdate, valueUpdate, function (err, result) {

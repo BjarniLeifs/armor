@@ -1,6 +1,7 @@
 var exports = module.exports = {};
 /* Declare of crypto model, it is for salt and hasing information. Security model. */
 var crypto = require('crypto');
+
 /* Declare nodemailer  to send emails */
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
@@ -108,11 +109,11 @@ exports.generateResetJWT = function (object) {
 exports.sendResetPassEmail = function (user, token, req) {
 	/* Defining the transporter to send email with configureation */
 	var transporter = nodemailer.createTransport(smtpTransport({
-		    host: 'smtp.vedur.is',
-		    port: 25,
+		    host: config.smtpHost,
+		    port: 587,
 	   		auth: {
-	       		user: 'test@vedur.is',
-	       		pass: 'Qwerty78'
+	       		user: config.emailUser,
+	       		pass: config.emailPass
 	    	}
 		}));
 	/* Structor for the e-mail to be sent. */
@@ -140,11 +141,11 @@ exports.sendResetPassEmail = function (user, token, req) {
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
 exports.confirmPassReset = function (user, req) {
 	var transporter = nodemailer.createTransport(smtpTransport({
-		    host: 'smtp.vedur.is',
-		    port: 25,
+		    host: config.smtpHost,
+		    port: 587,
 	   		auth: {
-	       		user: 'test@vedur.is',
-	       		pass: 'Qwerty78'
+	       		user: config.emailUser,
+	       		pass: config.emailPass
 	    	}
 		})
 	);

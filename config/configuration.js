@@ -16,7 +16,9 @@ module.exports = {
 	'payload' : 'payload',
 
 	//'connectionUrl' : 'postgres://postgres:1234@localhost:5432/armor' 
-	'connectionUrl' : 'postgres://postgres:@localhost:5432/armor'
- 
+	'connectionUrl' : 'postgres://postgres:1234@localhost:5432/armor',
+	'smtpHost' : 'smtp.gmail.com',
+	'emailUser': 'travelapptests@gmail.com',
+	'emailPass': 'bjarnil10' 
 	
 };
