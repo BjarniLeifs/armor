@@ -91,7 +91,7 @@ COPY users (id, resettoken, tokenexpired, name, email, username, hash, salt) FRO
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('users_id_seq', 0, true);
+SELECT pg_catalog.setval('users_id_seq', 1, true);
 
 
 --
