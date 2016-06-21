@@ -33,7 +33,7 @@ exports.getTokenUsername = function (req) {
 };
 
 /* Getting id from token */
-exports.getTokenUserId = function () {
+exports.getTokenUserId = function (req) {
  return req.payload.id;
 };
 /* Getting exp date from token */

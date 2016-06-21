@@ -45,7 +45,7 @@ app.engine('html', require('ejs').renderFile);
 
 /* set path to views */
 
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'public/views'));
 app.set('view engine', 'html');
 
 /* uncomment after placing your favicon in /public */
