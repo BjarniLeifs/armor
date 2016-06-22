@@ -38,13 +38,11 @@ exports.register = function (req, cb) {
 };
 
 /* setPassword for user */
-exports.setPassword = function (password) {
+exports.setPassword = function (password, cb) {
 	//console.log(password);
 	bcrypt.genSalt(10, function(err, salt) {
-	    bcrypt.hash(password, salt, function(err, hash) {
-	    	if (err)
-	    		return err;
-			return hash; 
+	    bcrypt.hash(password, salt, function(err, hash) {	
+			return cb(hash); 
    		});
 	});	
 };
@@ -61,7 +59,6 @@ exports.validPassword = function (password, object, cb) {
 exports.changePassword = function (object) {
 	/* Set new object with right information */
 	var checkobject = {
-		salt : object.salt,
 		hash : object.hash
 	};
 	/* validate if everything is okei */
@@ -71,8 +68,7 @@ exports.changePassword = function (object) {
 		/* Populate return object with new data. (new salt and hash) */
 		var returnObject = {
 			username: object.username,
-			salt 	: setPass.salt,
-			hash 	: setPass.hash
+			hash 	: setPass
 		};	
 		return returnObject;
 	} 
@@ -132,12 +128,24 @@ exports.generateResetJWT = function (object) {
 	config.secret);
 };
 
+exports.decodeJWT = function (req) {
+	//console.log('header i helper ' + req.headers.authorization);
+	var token = req.headers.authorization;
+	token2 = token.substring(7);
+	//console.log("token 2 " + token2);
+	var decoded = jwt.verify(token2, config.secret);
+	//console.log("decode i helper " + decoded.id + ' ' + decoded.username);
+	return decoded;
+};
+
+
+
 /* After generate token this is used to send e-mail to user with token. */
 exports.sendResetPassEmail = function (user, token, req) {
 	/* Defining the transporter to send email with configureation */
 	var transporter = nodemailer.createTransport(smtpTransport({
 		    host: config.smtpHost,
-		    port: 587,
+		    port: config.smtpPort,
 	   		auth: {
 	       		user: config.emailUser,
 	       		pass: config.emailPass
@@ -146,14 +154,10 @@ exports.sendResetPassEmail = function (user, token, req) {
 	/* Structor for the e-mail to be sent. */
 	var mailOptions = {
 		to: user.email,
-		from: 'test@vedur.is',
-		subject: 'Vedurstofa Íslands, beðni um að breyta lykilorði notanda '+ user.name + ' ',
-		text: 'Hæ '+user.name+' þú hefur fengið þennan póst vegna þess að þú (eða einhver annar) hefur beðið um að breyta lykilorði hjá þér á aðgangi þínum á kerfinu Trausti \n\n' +
-			'Vinsamlegast smelltu á slóð hér að neðan, eða afritaðu þessa slóð og notaðu í vafra til að ljúka þessu ferli.\n\n' +
-			'slóð : http://' + req.headers.host + '/#/reset/' + token.token + ' \n\n' +
-			'Ef þú hefur ekki beðið um þetta, þá vinsamlegast máttu leiða þennan póst hjá þér og lykilorðið þitt verður óbreytt.\n' + '\n\n' +
-			'Kær Kveðja \n' +
-			'Vefkerfið Trausti'
+		from: config.emailUser,
+		subject: ''+config.emailSubject + user.name + config.projectName+'',
+		text: ''+config.greeting + user.name + config.contentMailToken +
+			'http://' + req.headers.host + '/#/reset/' + token.token + ' \n\n' + config.regards
 	};
 	/* Sending e-mail to user, error checking or send. */
 	transporter.sendMail(mailOptions, function (err, res) {
@@ -170,7 +174,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 exports.confirmPassReset = function (user, req) {
 	var transporter = nodemailer.createTransport(smtpTransport({
 		    host: config.smtpHost,
-		    port: 587,
+		    port: config.smtpPort,
 	   		auth: {
 	       		user: config.emailUser,
 	       		pass: config.emailPass
@@ -179,14 +183,9 @@ exports.confirmPassReset = function (user, req) {
 	);
 	var mailOptions = {
 		to: user.email,
-		from: 'trausti@vedurstofa.is',
-		subject: 'Vedurstofa Íslands, beðni um að breyta lykilorði notanda '+ user.name + ' ',
-		text: 'Hæ '+user.name+' þú hefur fengið þennan póst vegna þess að þú (eða einhver annar) hefur beðið um að breyta lykilorði hjá þér á aðgangi þínum á kerfinu Trausti \n\n' +
-			'Lykilorðið þitt hefur verið uppfært\n\n' +
-			'Ef þú kannast ekki við að hafa uppfært lykilorðið þitt, þá vinsamlegast hafðu samband við stjórnanda.\n' + 
-			'\n\n' +
-			'Kær Kveðja \n' +
-			'Vefkerfið Trausti'
+		from: config.emailUser,
+		subject: '' + config.emailSubject + user.name + config.projectName +'',
+		text: '' + config.greeting + user.name + config.contentMailReportChangePass + config.regards +''
 	};
 	transporter.sendMail(mailOptions, function (err, res) { 
 		if (err) {
@@ -198,12 +197,4 @@ exports.confirmPassReset = function (user, req) {
 	
 }; 
 
-exports.decodeJWT = function (req) {
-	//console.log('header i helper ' + req.headers.authorization);
-	var token = req.headers.authorization;
-	token2 = token.substring(7);
-	//console.log("token 2 " + token2);
-	var decoded = jwt.verify(token2, config.secret);
-	//console.log("decode i helper " + decoded.id + ' ' + decoded.username);
-	return decoded;
-};
+
