@@ -1,6 +1,6 @@
 var exports = module.exports = {};
-/* Declare of crypto model, it is for salt and hasing information. Security model. */
-var crypto = require('crypto');
+/* Declare of bcrypt model, it is for salt and hasing information. Security model. */
+var bcrypt = require('bcryptjs');
 
 /* Declare nodemailer  to send emails */
 var nodemailer = require('nodemailer');
@@ -13,26 +13,50 @@ var jwt = require('jsonwebtoken');
 //var jwts = require('jwt-simple');
 /* Getting secrets config file. */
 var config = require('../config/configuration');
+var service = require('./../library/dbLibrary');
+
+/* register new user */
+exports.register = function (req, cb) {
+	bcrypt.genSalt(10, function (err, salt) {
+	    bcrypt.hash(req.body.password, salt, function(err, hash) {
+			var stringAdd = 'INSERT INTO users (username, name, email, hash, salt)';
+				stringAdd +='  VALUES($1, $2, $3, $4, $5) returning *';
+				// Defining values to insert 
+				var value = [req.body.username, req.body.name, 
+							req.body.email, hash, null];
+				// Calling postService to add values with string constrains 
+				service.queryStringValue(stringAdd, value, function (err, results) {
+						if (results) {
+							return cb(true);
+						} else {
+							return cb(false);
+						}
+					}
+				);; 
+   		});
+	});	
+};
+
 /* setPassword for user */
 exports.setPassword = function (password) {
-	/* Hasing and salting password. */
-	var salting = crypto.randomBytes(16).toString('hex');
-	var hashing = crypto.pbkdf2Sync(password, salting, 1000, 64).toString();
-	/* Making object to return. */
-	var object = {
-		salt: salting,
-		hash: hashing
-	};
-	return object;
+	//console.log(password);
+	bcrypt.genSalt(10, function(err, salt) {
+	    bcrypt.hash(password, salt, function(err, hash) {
+	    	if (err)
+	    		return err;
+			return hash; 
+   		});
+	});	
 };
-/* Validating the password of user. */
-exports.validPassword = function (password, object) {
-	/* Generate hash from provided password, with user salt, */ 
-	var hash = crypto.pbkdf2Sync(password, object.salt, 1000, 64).toString();
-	/* Returns true or false. */
-	return hash === object.hash;
 
+/* Validating the password of user. */
+exports.validPassword = function (password, object, cb) {
+	//console.log(object);
+	bcrypt.compare(password, object.hash, function (err, res) {
+    	return cb(res);
+	});
 };
+
 /* Change password if user needs to change it for any reson. */
 exports.changePassword = function (object) {
 	/* Set new object with right information */
@@ -57,6 +81,7 @@ exports.changePassword = function (object) {
 		return null;
 	}
 };
+
 /* 
  Generating json web token for user.. exp = expire, returns token
  with id, usernamem scope and when it expires +
@@ -88,6 +113,7 @@ exports.generateJWT = function (object) {
 	}, 
 	config.secret);
 };
+
 /* Just used to reset password and store this token */
 exports.generateResetJWT = function (object) {
 	/* Set expirateion to 1 hour. */
@@ -105,6 +131,7 @@ exports.generateResetJWT = function (object) {
 	}, 
 	config.secret);
 };
+
 /* After generate token this is used to send e-mail to user with token. */
 exports.sendResetPassEmail = function (user, token, req) {
 	/* Defining the transporter to send email with configureation */
@@ -138,6 +165,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 	});
 
 };
+
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
 exports.confirmPassReset = function (user, req) {
 	var transporter = nodemailer.createTransport(smtpTransport({

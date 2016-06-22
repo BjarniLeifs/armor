@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+var bcrypt = require('bcryptjs');
 /* Definging postgressSQL module */
 var pg = require('pg');
 /* Definging configuration of database config */
@@ -30,42 +30,25 @@ router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	var resUser = [req.body.username];
 	/* Getting salt and hash to put in database with user */
-	var passObject = authService.setPassword(req.body.password);
+	var hash = authService.setPassword(req.body.password);
 	var returnMe = [];
 	/* Defingin and looking for user with username before I can add to database.*/
 	var table = 'users';
 	var string = 'select * from ' + table +' WHERE username = ($1)';
-	/* Calling for that user if exist it prompt the result else insert into database. */
-	helper = service.queryStringValue(string, resUser, 
+	//Calling for that user if exist it prompt the result else insert into database. 
+	service.queryStringValue(string, resUser, 
 		function (err, result) {
-			console.log(result);
-
 			if (result.length < 1) {
-				/* Defining the string to pass to helper for insert */
-				var stringAdd = 'INSERT INTO users (username, name, email, hash, salt)';
-					stringAdd +='  VALUES($1, $2, $3, $4, $5) returning *';
-				//var auditid = jwttoken.decodeJWT(req);
-
-				/* Defining values to insert */
-				var value = [req.body.username, req.body.name, 
-							req.body.email, passObject.hash, passObject.salt];
-				/* Calling postService to add values with string constrains */
-				addHelper = service.queryStringValue(stringAdd, value,
-					function (err, results) {
-						if (results) {
-							return res.status(200).json({message: 'User added succesfully.'});
-						} else {
-							return res.status(400).json({message: 'Error adding user.'});
-						}
+				authService.register(req, function (results) {
+					if (!results) {
+						return res.status(400).json({message: 'Error adding user.'});
+					} else {
+						return res.status(200).json({message: 'User added succesfully.'});
 					}
-				);
+				});
 			} else {
-				for (var i = 0; i < result.length; i++){
-					/* User was found, returning to user for his knowladge */
-					if(result[i].username === req.body.username){
-						return res.status(400).json({message: 'Username already exists, with email ' + result[i].email + '.'});
-					}
-				}
+				// User was found, returning to user for his knowladge
+				return res.status(400).json({message: 'Username already exists.'});	
 			}
 		}
 	);
@@ -79,24 +62,25 @@ router.post('/login', function (req, res, next) {
 	var table = 'users';
 	var string ='SELECT * FROM '+ table + ' WHERE UPPER(username) = UPPER($1)';
 	var value = [req.body.username];
-	helper = service.queryStringValue(string, value, function (err, result) {
+	service.queryStringValue(string, value, function (err, result) {
 		if (err) {
 			return res.status(400).json({message: 'Error running query to '+ table});
 		} else {
 			if (result[0] !== undefined) {
-				/* Check if user is active or not... if not he can not login. */
-				if (result[0].isactive) {
-					/* Check if password is valid. */
-					if (authService.validPassword(req.body.password, result[0])) {
-						return res.json({token: authService.generateJWT(result[0])});
-					} else {
-						res.status(422).json({message: 'Incorrect password'});
-					}
-				} else {
-					res.status(422).json({message: 'This user is not active. Contact administrator'});
-				}
+				// Check if user is active or not... if not he can not login. 
+					console.log(result);
+					authService.validPassword(req.body.password, result[0], function (callBack){
+						console.log(callBack);
+						if (callBack) {
+							return res.status(200).json({token: authService.generateJWT(result[0])});
+						}  else {
+							return res.status(422).json({message: 'Incorrect password'});
+						}
+
+					});
+
 			} else {
-				res.status(400).json({message: 'No such user.'});
+				return res.status(400).json({message: 'No such user.'});
 			}
 		}
 	});

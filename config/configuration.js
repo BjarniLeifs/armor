@@ -6,7 +6,7 @@ module.exports = {
 	 Setting variables for app
 	 secret is all around in the app... here we set it for the whole app.
 	*/
-	'secret' : 'SECRET',
+	'secret' : 'length.over c0mpl3xity haha6p',
 	/* 
 	 In scopes.js we need to change this aswell 
 	 var tokenScopes = req.payload.scopes; payload = the name here "payload".
