@@ -94,7 +94,7 @@ router.post('/forgotPassword', function (req, res, next) {
 	var string ='SELECT * FROM '+ table + ' WHERE email = ($1)';
 	var value = [req.body.email];
 
-	helper = service.queryStringValue(string, value, function (err, result) {
+	service.queryStringValue(string, value, function (err, result) {
 		if (err) {
 			return res.status(400).json({message: 'Error running query to '+ table});
 		} else {
@@ -128,9 +128,9 @@ router.post('/forgotPassword', function (req, res, next) {
 		}
 	});
 });	
+
 /* Get token from users after e-mail was sent to check if the right user, then okei to reset password */
 router.post('/reset/:token', function (req, res, next) {
-
 	var token = req.params.token;
 	if (!token) {
 		return res.status(400).json({message: 'Please provide token'});
@@ -161,9 +161,9 @@ router.post('/reset/:token', function (req, res, next) {
 					email 	 	: row.email,
 					name 	 	: row.name,
 					tokenExpire : row.token_expired,
-					token 		: row.reset_token
+					token 		: row.reset_token,
+					password 	: req.body.password
 				};
-
 			});
 			/* close connection */
 			query.on('end', function () {		
@@ -175,38 +175,31 @@ router.post('/reset/:token', function (req, res, next) {
 				} else {
 					if (results.token === token) {
 						if (today <= results.tokenExpire) {
-							var passObject = authService.setPassword(req.body.password);
 							
-							client.query('UPDATE users SET reset_token = ($1), token_expired = ($2), hash = ($3), salt = ($4) WHERE id = ($5) ', 
-								[null, null, passObject.hash, passObject.salt ,results.id], 
-								function (err, result) {
-									if (err) {
-										done(err);
-										return res.status(400).json({message: 'Erorr updating password.'});
-									}
-									done();
+							authService.setPassword(results, function (res) {
+								if(res){
+									authService.confirmPassReset(results, req);
+									res.status(200).json({message: 'Confirmation E-mail sent to user about password is updated.'});
+								} else {
+									res.status(400).json({message: 'Something went wrong.'});
 								}
-							);
-							authService.confirmPassReset(results, req);
-							res.status(200).json({message: 'Confirmation E-mail sent to user about password is updated.'});	
+								done();
+							});
+								
 						} else {
 							done();
 							res.status(404).json({message: 'Token has expired.'});
 						}
-
 					} else {
 						done();
 						res.status(404).json({message: 'Invalid token'});
 					}
-				}
-				
+				}	
 			});
-
 		});
 	} else {
 		return res.status(400).json({message: 'Password did not match.'});
 	} 
-	
 });
 
 

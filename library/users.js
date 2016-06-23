@@ -34,17 +34,26 @@ exports.register = function (req, cb) {
 							return cb(false);
 						}
 					}
-				);; 
+				);
    		});
 	});	
 };
 
 /* setPassword for user */
-exports.setPassword = function (password, cb) {
+exports.setPassword = function (object, cb) {
 	//console.log(password);
 	bcrypt.genSalt(10, function(err, salt) {
-	    bcrypt.hash(password, salt, function(err, hash) {	
-			//return cb(hash); 
+	    bcrypt.hash(object.password, salt, function (err, hash) {							
+			var stringAdd 	= 'UPDATE users SET reset_token = ($1), token_expired = ($2), hash = ($3) WHERE id = ($4) '; 
+			var value 		= [null, null, hash, object.id]; 
+			service.queryStringValue(stringAdd, value, function (err, results) {
+						if (results) {
+							return cb(true);
+						} else {
+							return cb(false);
+						}
+					}
+				);
    		});
 	});	
 };
@@ -169,7 +178,6 @@ exports.sendResetPassEmail = function (user, token, req) {
 			return true;
 		}
 	});
-
 };
 
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
@@ -195,8 +203,7 @@ exports.confirmPassReset = function (user, req) {
 		} else {
 			return true;
 		}
-	});
-	
+	});	
 }; 
 
 
