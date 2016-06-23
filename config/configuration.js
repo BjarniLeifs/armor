@@ -19,7 +19,7 @@ module.exports = {
 	'smtpPort'						:  587,
 	'emailUser' 					: 'travelapptests@gmail.com',
 	'emailPass'						: 'bjarnil10',
-	'projectName'  					: ' á vefsíðu armor.'
+	'projectName'  					: ' á vefsíðu armor.',
 	'emailSubject' 					: 'Beðni um að breyta lykilorði notanda ',
 	'greeting' 						: 'Hæ',
 	'contentMailToken'  			: ' þú hefur fengið þennan póst vegna þess að þú (eða einhver annar) hefur beðið um að breyta lykilorði hjá þér á aðgangi þínum á vefsíðu armor. \n\n Vinsamlegast smelltu á slóð hér að neðan, eða afritaðu þessa slóð í vafra til að breyta lykilorði. \n\n',

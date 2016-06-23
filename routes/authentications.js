@@ -14,7 +14,7 @@ var dateService = require('./../library/dates');
 var authService = require('./../library/users');
 
 //Just for development
-/*
+
 router.get('/users', function (req, res, next) {
 	var table = 'users';
 	var string = 'SELECT * FROM ' +table;
@@ -27,7 +27,7 @@ router.get('/users', function (req, res, next) {
 	});
 	
 });
-*/
+
 
 /* function register for registering new users */
 router.post('/register', function (req, res, next) {
