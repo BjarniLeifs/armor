@@ -42,10 +42,9 @@ CREATE TABLE users (
     resettoken character varying,
     tokenexpired timestamp with time zone,
     name character varying,
-    email character(50),
-    username character(50),
-    hash character varying,
-    salt character varying
+    email character varying(80),
+    username character varying(60),
+    hash character varying
 );
 
 
