@@ -19,11 +19,11 @@ var service = require('./../library/dbLibrary');
 exports.register = function (req, cb) {
 	bcrypt.genSalt(10, function (err, salt) {
 	    bcrypt.hash(req.body.password, salt, function(err, hash) {
-			var stringAdd = 'INSERT INTO users (username, name, email, hash, salt)';
-				stringAdd +='  VALUES($1, $2, $3, $4, $5) returning *';
+			var stringAdd = 'INSERT INTO users (username, name, email, hash)';
+				stringAdd +='  VALUES($1, $2, $3, $4) returning *';
 				// Defining values to insert 
 				var value = [req.body.username, req.body.name, 
-							req.body.email, hash, null];
+							req.body.email, hash];
 				// Calling postService to add values with string constrains 
 				service.queryStringValue(stringAdd, value, function (err, results) {
 						if (results) {
@@ -42,7 +42,7 @@ exports.setPassword = function (password, cb) {
 	//console.log(password);
 	bcrypt.genSalt(10, function(err, salt) {
 	    bcrypt.hash(password, salt, function(err, hash) {	
-			return cb(hash); 
+			//return cb(hash); 
    		});
 	});	
 };
