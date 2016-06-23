@@ -28,7 +28,6 @@ router.get('/users', function (req, res, next) {
 	
 });
 
-
 /* function register for registering new users */
 router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
@@ -110,7 +109,7 @@ router.post('/forgotPassword', function (req, res, next) {
 				var stringUpdate = 'UPDATE users SET resettoken = ($1), tokenexpired = ($2) WHERE id = ($3)';
 				var valueUpdate = [newToken.token, newToken.tokenExpire, objectResult.id];
 				
-				var update = service.queryStringValue(stringUpdate, valueUpdate, function (err, result) {
+				service.queryStringValue(stringUpdate, valueUpdate, function (err, result) {
 					if (err) {
 						return res.status(400).json({message: 'Error running query'});
 					} else {
