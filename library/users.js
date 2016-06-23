@@ -13,7 +13,9 @@ var jwt = require('jsonwebtoken');
 //var jwts = require('jwt-simple');
 /* Getting secrets config file. */
 var config = require('../config/configuration');
+var email = require('./../config/mailOption');
 var service = require('./../library/dbLibrary');
+
 
 /* register new user */
 exports.register = function (req, cb) {
@@ -144,20 +146,20 @@ exports.decodeJWT = function (req) {
 exports.sendResetPassEmail = function (user, token, req) {
 	/* Defining the transporter to send email with configureation */
 	var transporter = nodemailer.createTransport(smtpTransport({
-		    host: config.smtpHost,
-		    port: config.smtpPort,
+		    host: email.smtpHost,
+		    port: email.smtpPort,
 	   		auth: {
-	       		user: config.emailUser,
-	       		pass: config.emailPass
+	       		user: email.emailUser,
+	       		pass: email.emailPass
 	    	}
 		}));
 	/* Structor for the e-mail to be sent. */
 	var mailOptions = {
 		to: user.email,
-		from: config.emailUser,
-		subject: ''+config.emailSubject + user.name + config.projectName+'',
-		text: ''+config.greeting + user.name + config.contentMailToken +
-			'http://' + req.headers.host + '/#/reset/' + token.token + ' \n\n' + config.regards
+		from: email.emailUser,
+		subject: ''+email.emailSubject + user.name + email.projectName+'',
+		text: ''+email.greeting + user.name + email.contentMailToken +
+			email.http + req.headers.host + email.injectUrl + token.token + ' \n\n' + email.regards +''
 	};
 	/* Sending e-mail to user, error checking or send. */
 	transporter.sendMail(mailOptions, function (err, res) {
@@ -173,19 +175,19 @@ exports.sendResetPassEmail = function (user, token, req) {
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
 exports.confirmPassReset = function (user, req) {
 	var transporter = nodemailer.createTransport(smtpTransport({
-		    host: config.smtpHost,
-		    port: config.smtpPort,
+		    host: email.smtpHost,
+		    port: email.smtpPort,
 	   		auth: {
-	       		user: config.emailUser,
-	       		pass: config.emailPass
+	       		user: email.emailUser,
+	       		pass: email.emailPass
 	    	}
 		})
 	);
 	var mailOptions = {
 		to: user.email,
 		from: config.emailUser,
-		subject: '' + config.emailSubject + user.name + config.projectName +'',
-		text: '' + config.greeting + user.name + config.contentMailReportChangePass + config.regards +''
+		subject: '' + email.emailSubject + user.name + email.projectName +'',
+		text: '' + email.greeting + user.name + email.contentMailReportChangePass + email.regards +''
 	};
 	transporter.sendMail(mailOptions, function (err, res) { 
 		if (err) {
