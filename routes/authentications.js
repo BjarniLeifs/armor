@@ -13,6 +13,8 @@ var service  	= require('./../library/dbLibrary');
 var dateService = require('./../library/dates');
 var authService = require('./../library/users');
 
+//Just for development
+/*
 router.get('/users', function (req, res, next) {
 	var table = 'users';
 	var string = 'SELECT * FROM ' +table;
@@ -25,14 +27,16 @@ router.get('/users', function (req, res, next) {
 	});
 	
 });
+*/
 
+/* function register for registering new users */
 router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	var resUser = [req.body.username];
 	/* Getting salt and hash to put in database with user */
 	var hash = authService.setPassword(req.body.password);
 	var returnMe = [];
-	/* Defingin and looking for user with username before I can add to database.*/
+	/* Defining and looking for user with username before I can add to database.*/
 	var table = 'users';
 	var string = 'select * from ' + table +' WHERE username = ($1)';
 	//Calling for that user if exist it prompt the result else insert into database. 
@@ -54,7 +58,7 @@ router.post('/register', function (req, res, next) {
 	);
 });
 
-/* Login is for everyone to access... */
+/* function login checks if username is in the database and then authenticates password */
 router.post('/login', function (req, res, next) {
 	if (!req.body.username || !req.body.password) {
 		return res.status(400).json({message: 'Please fill out all fields!'});
@@ -67,18 +71,14 @@ router.post('/login', function (req, res, next) {
 			return res.status(400).json({message: 'Error running query to '+ table});
 		} else {
 			if (result[0] !== undefined) {
-				// Check if user is active or not... if not he can not login. 
-					console.log(result);
-					authService.validPassword(req.body.password, result[0], function (callBack){
-						console.log(callBack);
-						if (callBack) {
-							return res.status(200).json({token: authService.generateJWT(result[0])});
-						}  else {
-							return res.status(422).json({message: 'Incorrect password'});
-						}
-
-					});
-
+				// Check password agains salt
+				authService.validPassword(req.body.password, result[0], function (callBack){
+					if (callBack) {
+						return res.status(200).json({token: authService.generateJWT(result[0])});
+					}  else {
+						return res.status(422).json({message: 'Incorrect password'});
+					}
+				});
 			} else {
 				return res.status(400).json({message: 'No such user.'});
 			}
