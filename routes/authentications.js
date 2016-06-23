@@ -33,7 +33,7 @@ router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	var resUser = [req.body.username];
 	/* Getting salt and hash to put in database with user */
-	var hash = authService.setPassword(req.body.password);
+
 	var returnMe = [];
 	/* Defining and looking for user with username before I can add to database.*/
 	var table = 'users';
@@ -42,7 +42,10 @@ router.post('/register', function (req, res, next) {
 	service.queryStringValue(string, resUser, 
 		function (err, result) {
 			if (result.length < 1) {
-				authService.register(req, function (results) {
+				authService.register(req, function (err, results) {
+					if(err) {
+						return res.status(400).json({message: 'Error running query'});
+					}
 					if (!results) {
 						return res.status(400).json({message: 'Error adding user.'});
 					} else {
@@ -140,19 +143,20 @@ router.post('/reset/:token', function (req, res, next) {
 	}
 	if (req.body.password === req.body.confirmPassword) {
 		var results = {};
+
 		pg.connect(connectionString, function (err, client, done) {
 			if (err) {
 				done(err);
 				return res.status(400).json({message: 'error fetching client from pool'});
 			}
 
-			
 			/* SQL Query, select data */
-			var query = client.query('SELECT * FROM users WHERE reset_token = ($1)', [token],
+			var query = client.query('SELECT * FROM users WHERE resettoken = ($1)', [token],
 				function (err, result) {
 					done();
 				}
 			);
+
 			/* Stream results back */ 
 			query.on('row', function (row) {
 				results = {
@@ -160,11 +164,12 @@ router.post('/reset/:token', function (req, res, next) {
 					username 	: row.username,
 					email 	 	: row.email,
 					name 	 	: row.name,
-					tokenExpire : row.token_expired,
-					token 		: row.reset_token,
+					tokenExpire : row.tokenexpired,
+					token 		: row.resettoken,
 					password 	: req.body.password
 				};
 			});
+
 			/* close connection */
 			query.on('end', function () {		
 				var today = dateService.dateAddMin(0);
@@ -176,23 +181,25 @@ router.post('/reset/:token', function (req, res, next) {
 					if (results.token === token) {
 						if (today <= results.tokenExpire) {
 							
-							authService.setPassword(results, function (res) {
-								if(res){
-									authService.confirmPassReset(results, req);
-									res.status(200).json({message: 'Confirmation E-mail sent to user about password is updated.'});
-								} else {
-									res.status(400).json({message: 'Something went wrong.'});
-								}
+							authService.setPassword(results, function (err, check) {
 								done();
+								if(err) {
+									return res.status(400).json({message: 'Error running query'});
+								}
+								if(check){
+									authService.confirmPassReset(results, req);
+									return res.status(200).json({message: 'Confirmation E-mail sent to user about password is updated.'});
+								} else {
+									return res.status(400).json({message: 'Something went wrong.'});
+								}
 							});
-								
 						} else {
 							done();
-							res.status(404).json({message: 'Token has expired.'});
+							return res.status(404).json({message: 'Token has expired.'});
 						}
 					} else {
 						done();
-						res.status(404).json({message: 'Invalid token'});
+						return res.status(404).json({message: 'Invalid token'});
 					}
 				}	
 			});

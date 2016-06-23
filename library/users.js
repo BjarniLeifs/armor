@@ -22,41 +22,46 @@ exports.register = function (req, cb) {
 	bcrypt.genSalt(10, function (err, salt) {
 	    bcrypt.hash(req.body.password, salt, function(err, hash) {
 			var stringAdd = 'INSERT INTO users (username, name, email, hash)';
-				stringAdd +='  VALUES($1, $2, $3, $4) returning *';
-				// Defining values to insert 
-				var value = [req.body.username, req.body.name, 
-							req.body.email, hash];
-				// Calling postService to add values with string constrains 
-				service.queryStringValue(stringAdd, value, function (err, results) {
-						if (results) {
-							return cb(true);
-						} else {
-							return cb(false);
-						}
+			stringAdd +='  VALUES($1, $2, $3, $4) returning *';
+			// Defining values to insert 
+			var value = [req.body.username, req.body.name, 
+						req.body.email, hash];
+			// Calling postService to add values with string constrains 
+			service.queryStringValue(stringAdd, value, function (err, results) {
+					if (err) 
+						cb(err, false)
+					if (results) {
+						return cb(false, true);
+					} else {
+						return cb(false, false);
 					}
-				);
+				}
+			);
    		});
 	});	
 };
 
 /* setPassword for user */
-exports.setPassword = function (object, cb) {
-	//console.log(password);
-	bcrypt.genSalt(10, function(err, salt) {
-	    bcrypt.hash(object.password, salt, function (err, hash) {							
-			var stringAdd 	= 'UPDATE users SET reset_token = ($1), token_expired = ($2), hash = ($3) WHERE id = ($4) '; 
-			var value 		= [null, null, hash, object.id]; 
+exports.setPassword = function (req, cb) {
+	bcrypt.genSalt(10, function (err, salt) {
+	    bcrypt.hash(req.password, salt, function(err, hash) {
+			var stringAdd 	= 'UPDATE users SET resettoken = ($1), tokenexpired = ($2), hash = ($3) WHERE id = ($4) returning *'; 
+			var value 		= [null, null, hash, req.id]; 
+			// Calling postService to add values with string constrains 
 			service.queryStringValue(stringAdd, value, function (err, results) {
-						if (results) {
-							return cb(true);
-						} else {
-							return cb(false);
-						}
+					if (err)
+						cb(err, false);
+					if (results) {
+						return cb(false, true);
+					} else {
+						return cb(false, false);
 					}
-				);
+				}
+			);
    		});
 	});	
 };
+
 
 /* Validating the password of user. */
 exports.validPassword = function (password, object, cb) {
