@@ -11,7 +11,6 @@ exports.getUserToken = function () {
 		id: 1,
 		username: 'bjarni',
 		password: 'bjarni',
-		isAdmin  : false
 	};
 
 	return users.generateJWT(object);

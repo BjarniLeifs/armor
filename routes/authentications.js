@@ -8,6 +8,7 @@ const config = require('./../config/configuration');
 /* Defining connectionstring for the database */
 const connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
+
 const service  	= require('./../library/dbLibrary');
 const dateService = require('./../library/dates');
 const authService = require('./../library/users');
@@ -32,7 +33,6 @@ router.post('/register', function (req, res, next) {
 	"use strict";
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	let resUser = [req.body.username];
-
 	/* Defining and looking for user with username before I can add to database.*/
 	let table = 'users';
 	let string = 'select * from ' + table +' WHERE username = ($1)';
