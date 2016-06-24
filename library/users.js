@@ -29,14 +29,16 @@ exports.register = function (req, cb) {
 				let value = [req.body.username, req.body.name, 
 							req.body.email, hash];
 				// Calling postService to add values with string constrains 
-				service.queryStringValue(stringAdd, value, function (err, results) {
-						if (results) {
-							return cb(true);
-						} else {
-							return cb(false);
-						}
+			service.queryStringValue(stringAdd, value, function (err, results) {
+					if (err) 
+						return cb(err, false);
+					if (results) {
+						return cb(false, true);
+					} else {
+						return cb(false, false);
 					}
-				);
+				}
+			);
    		});
 	});	
 };
@@ -49,16 +51,19 @@ exports.setPassword = function (object, cb) {
 			let stringAdd 	= 'UPDATE users SET resettoken = ($1), tokenexpired = ($2), hash = ($3) WHERE id = ($4) '; 
 			let value 		= [null, null, hash, object.id]; 
 			service.queryStringValue(stringAdd, value, function (err, results) {
-						if (results) {
-							return cb(true);
-						} else {
-							return cb(false);
-						}
+					if (err)
+						return cb(err, false);
+					if (results) {
+						return cb(false, true);
+					} else {
+						return cb(false, false);
 					}
-				);
+				}
+			);
    		});
 	});	
 };
+
 
 /* Validating the password of user. */
 exports.validPassword = function (password, object, cb) {
