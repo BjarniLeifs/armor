@@ -1,4 +1,4 @@
-"use strict";
+
 
 //let exports = module.exports = {};
 /* Declare of bcrypt model, it is for salt and hasing information. Security model. */

@@ -44,6 +44,7 @@ module.exports = function(grunt) {
       files: ['app.js', 'gruntfile.js', 'routes/**/*.js', 'library/**/*.js', 'config/**/*.js', 'test/**/**/*.js'],
       options: {
         // options here to override JSHint defaults
+        "esversion" : 6,
         globals: {
           jQuery: true,
           console: true,
@@ -62,6 +63,7 @@ module.exports = function(grunt) {
           node: true,
           strict: false,
           mocha: true
+
         }
       }
     },

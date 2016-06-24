@@ -28,15 +28,10 @@ const jwtCheck = require('express-jwt');
 /* Loading secret configuration */
 const config = require('./config/configuration');
 
-
-/* SWAGGER Documentation */
-const swagger = require("swagger-node-express");
-const requirejs = require('requirejs');
 /* Defining app as express server */
 const app = express();
 /* Configuring App sets and it's use */
-/* swagger  subpath to use express */
-const subpath = express();
+
 
 
 /* View engine setup */
@@ -59,34 +54,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 /* Middleware to read/write and other things of cookies */
 app.use(cookieParser());
-/* Opening connection between app and subpath for swagger */
-app.use("/", subpath);
-/* 
-  Telling express where static files are to use.
-  Meaningstatic = all files used, js,css,html is located 
-  in "public" folder and swagger uses "doc". 
- */
-app.use(express.static(path.join(__dirname, 'doc')));
+
 app.use(express.static(path.join(__dirname, 'public')));
-/* Set swagger to be handled with subpath */
-swagger.setAppHandler(subpath);
-/* SWAGGER configuration */
-swagger.configureSwaggerPaths('', '/api-docs', '');
-/* Create connection to browser for http://url-path-hosted*on/doc and linking to html path */
-app.get('/doc', function (req, res) {
-    res.sendFile(__dirname + '/doc/swagger.html');
-});
-
-/* Configure the API domain to be displayed in terminal  */
-const domain = 'localhost';
-/* Configure the API port to be displayed in terminal */
-const port = 3001;
-
-/* Set and display the application URL */
-const applicationUrl = 'http://' + domain + ':' + port + '/doc';
-console.log('Documentation API is running on ' + applicationUrl);
-
-swagger.configure(applicationUrl, '1.0.0');
 
 /* 
   Defining that all API calls need to be authanticated.
@@ -98,13 +67,14 @@ app.use('/api',jwtCheck({
   userProperty: config.payload
 }));
 
+/*   held þetta sé swagger
 requirejs.config({
     //Pass the top-level main.js/index.js require
     //function to requirejs so that node modules
     //are loaded relative to the top-level JS file.
     nodeRequire: require
 });
-
+*/
 /* 
   ROUTES activated and telling app where the routes are  for "API" calls!
 
