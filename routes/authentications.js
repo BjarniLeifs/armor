@@ -1,23 +1,25 @@
-var express = require('express');
-var router = express.Router();
-var bcrypt = require('bcryptjs');
+"use strict";
+
+let express = require('express');
+let router = express.Router();
+let bcrypt = require('bcryptjs');
 /* Definging postgressSQL module */
-var pg = require('pg');
+let pg = require('pg');
 /* Definging configuration of database config */
-var config = require('./../config/configuration');
+let config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-var connectionString = process.env.DATABASE_URL || config.connectionUrl;
+let connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
 
-var service  	= require('./../library/dbLibrary');
-var dateService = require('./../library/dates');
-var authService = require('./../library/users');
+let service  	= require('./../library/dbLibrary');
+let dateService = require('./../library/dates');
+let authService = require('./../library/users');
 
 //Just for development
 
 router.get('/users', function (req, res, next) {
-	var table = 'users';
-	var string = 'SELECT * FROM ' +table;
+	let table = 'users';
+	let string = 'SELECT * FROM ' +table;
 	helper = service.queryString(string, function (err, result) {
 		if (result) {
 			return res.status(200).json(result);
@@ -31,13 +33,10 @@ router.get('/users', function (req, res, next) {
 /* function register for registering new users */
 router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
-	var resUser = [req.body.username];
-	/* Getting salt and hash to put in database with user */
-	var hash = authService.setPassword(req.body.password);
-	var returnMe = [];
+	let resUser = [req.body.username];
 	/* Defining and looking for user with username before I can add to database.*/
-	var table = 'users';
-	var string = 'select * from ' + table +' WHERE username = ($1)';
+	let table = 'users';
+	let string = 'select * from ' + table +' WHERE username = ($1)';
 	//Calling for that user if exist it prompt the result else insert into database. 
 	service.queryStringValue(string, resUser, 
 		function (err, result) {
@@ -62,9 +61,9 @@ router.post('/login', function (req, res, next) {
 	if (!req.body.username || !req.body.password) {
 		return res.status(400).json({message: 'Please fill out all fields!'});
 	}
-	var table = 'users';
-	var string ='SELECT * FROM '+ table + ' WHERE UPPER(username) = UPPER($1)';
-	var value = [req.body.username];
+	let table = 'users';
+	let string ='SELECT * FROM '+ table + ' WHERE UPPER(username) = UPPER($1)';
+	let value = [req.body.username];
 	service.queryStringValue(string, value, function (err, result) {
 		if (err) {
 			return res.status(400).json({message: 'Error running query to '+ table});
@@ -90,24 +89,24 @@ router.post('/forgotPassword', function (req, res, next) {
 	if (!req.body.email) {
 		return res.status(400).json({message: 'Please fill out your email!'});
 	}
-	var table = 'users';
-	var string ='SELECT * FROM '+ table + ' WHERE email = ($1)';
-	var value = [req.body.email];
+	let table = 'users';
+	let string ='SELECT * FROM '+ table + ' WHERE email = ($1)';
+	let value = [req.body.email];
 
 	service.queryStringValue(string, value, function (err, result) {
 		if (err) {
 			return res.status(400).json({message: 'Error running query to '+ table});
 		} else {
-			var objectResult = result[0];
+			let objectResult = result[0];
 			if (objectResult.email === req.body.email) {
 
-				var newToken = {
+				let newToken = {
 					token 	 	: authService.generateResetJWT(objectResult),
 					tokenExpire : dateService.dateAddMin(60)
 				};
 
-				var stringUpdate = 'UPDATE users SET resettoken = ($1), tokenexpired = ($2) WHERE id = ($3)';
-				var valueUpdate = [newToken.token, newToken.tokenExpire, objectResult.id];
+				let stringUpdate = 'UPDATE users SET resettoken = ($1), tokenexpired = ($2) WHERE id = ($3)';
+				let valueUpdate = [newToken.token, newToken.tokenExpire, objectResult.id];
 				
 				service.queryStringValue(stringUpdate, valueUpdate, function (err, result) {
 					if (err) {
@@ -131,7 +130,7 @@ router.post('/forgotPassword', function (req, res, next) {
 
 /* Get token from users after e-mail was sent to check if the right user, then okei to reset password */
 router.post('/reset/:token', function (req, res, next) {
-	var token = req.params.token;
+	let token = req.params.token;
 	if (!token) {
 		return res.status(400).json({message: 'Please provide token'});
 	}
@@ -139,7 +138,7 @@ router.post('/reset/:token', function (req, res, next) {
 		return res.status(400).json({message: 'Please fill out both password fields.'});
 	}
 	if (req.body.password === req.body.confirmPassword) {
-		var results = {};
+		let results = {};
 		pg.connect(connectionString, function (err, client, done) {
 			if (err) {
 				done(err);
@@ -148,7 +147,7 @@ router.post('/reset/:token', function (req, res, next) {
 
 			
 			/* SQL Query, select data */
-			var query = client.query('SELECT * FROM users WHERE reset_token = ($1)', [token],
+			let query = client.query('SELECT * FROM users WHERE reset_token = ($1)', [token],
 				function (err, result) {
 					done();
 				}
@@ -167,7 +166,7 @@ router.post('/reset/:token', function (req, res, next) {
 			});
 			/* close connection */
 			query.on('end', function () {		
-				var today = dateService.dateAddMin(0);
+				let today = dateService.dateAddMin(0);
 
 				if (err) {
 					done();

@@ -1,15 +1,17 @@
-var exports = module.exports = {};
+"use strict";
 
-var pg = require('pg');
+//let exports = module.exports = {};
+
+let pg = require('pg');
 /* Definging configuration of database config */
-var config = require('./../config/configuration');
+let config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-var connectionString = process.env.DATABASE_URL ||  config.connectionUrl;
+let connectionString = process.env.DATABASE_URL ||  config.connectionUrl;
 
 /* Query to get all */
 exports.queryString = function (string, cb) {
 
-	var results = [];	
+	let results = [];	
 		
 	pg.connect(connectionString, function (err, client, done) {
 		if (err) {
@@ -18,7 +20,7 @@ exports.queryString = function (string, cb) {
 		}
 
 		/* SQL Query, select data */
-		var query = client.query(string,
+		let query = client.query(string,
 			function (err, result) {
         		done();
     		}
@@ -45,7 +47,7 @@ exports.queryString = function (string, cb) {
 /* Query to get all with an value */
 exports.queryStringValue = function (string, value, cb) {
 
-	var results = [];	
+	let results = [];	
 		
 	pg.connect(connectionString, function (err, client, done) {
 		if (err) {
@@ -54,7 +56,7 @@ exports.queryStringValue = function (string, value, cb) {
 		}
 
 		/* SQL Query, select data */
-		var query = client.query(string, value,
+		let query = client.query(string, value,
 			function (err, result) {
         		done();
     		}

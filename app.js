@@ -3,40 +3,40 @@
   for dependance : npm install nameOfModul --save
   for dev dependance : npm install nameOfModul --save-dev.
   Then you will need to use it where ever it is needed by declare
-  var name = require('theModelName');
+  const name = require('theModelName');
 */ 
 
 /* Express declared. */
-var express = require('express');
+const express = require('express');
 /* Path is used for path.join. It tells where specific paths are for the app to use. */
-var path = require('path');
+const path = require('path');
 /* A favicon is a visual cue that client software, like browsers, use to identify a site */
-var favicon = require('serve-favicon');
+const favicon = require('serve-favicon');
 /* Logger for dev purpose */
-var logger = require('morgan');
+const logger = require('morgan');
 /* Work with cookies, this is to translate to and from cookie */
-var cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 /* For body msg. req.body.something... */
-var bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 /* Load the modern build */
-var _ = require('lodash');
+const _ = require('lodash');
 
 /* Load Json Web Token */
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 /* Load express jwt, for authenticat checks of scopes and api calls */
-var jwtCheck = require('express-jwt');
+const jwtCheck = require('express-jwt');
 /* Loading secret configuration */
-var config = require('./config/configuration');
+const config = require('./config/configuration');
 
 
 /* SWAGGER Documentation */
-var swagger = require("swagger-node-express");
-var requirejs = require('requirejs');
+const swagger = require("swagger-node-express");
+const requirejs = require('requirejs');
 /* Defining app as express server */
-var app = express();
+const app = express();
 /* Configuring App sets and it's use */
 /* swagger  subpath to use express */
-var subpath = express();
+const subpath = express();
 
 
 /* View engine setup */
@@ -78,12 +78,12 @@ app.get('/doc', function (req, res) {
 });
 
 /* Configure the API domain to be displayed in terminal  */
-var domain = 'localhost';
+const domain = 'localhost';
 /* Configure the API port to be displayed in terminal */
-var port = 3001;
+const port = 3001;
 
 /* Set and display the application URL */
-var applicationUrl = 'http://' + domain + ':' + port + '/doc';
+const applicationUrl = 'http://' + domain + ':' + port + '/doc';
 console.log('Documentation API is running on ' + applicationUrl);
 
 swagger.configure(applicationUrl, '1.0.0');
@@ -127,7 +127,7 @@ app.use('/auth',require('./routes/authentications'));
 
 /* Catch 404 and forward to error handler */
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

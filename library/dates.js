@@ -1,4 +1,6 @@
-var exports = module.exports = {};
+"use strict";
+
+//let exports = module.exports = {};
 
 /*
 	You do only need to adjust year month or min. 
@@ -10,15 +12,15 @@ var exports = module.exports = {};
 
 exports.dateAndTimeNow = function () {
 	
-	var date = new Date();
+	let date = new Date();
 
     return date;
 };
 
 exports.dateAddYear = function (year) {
 
-	var date = new Date();
-	var addYear = new Date (date);
+	let date = new Date();
+	let addYear = new Date (date);
 	addYear.setFullYear(date.getFullYear() + year);
 
 	return addYear;
@@ -26,8 +28,8 @@ exports.dateAddYear = function (year) {
 
 exports.dateAddMonth = function (month) {
 
-	var date = new Date();
-	var addMonth = new Date (date);
+	let date = new Date();
+	let addMonth = new Date (date);
 	addMonth.setMonth(date.getMonth() + month);
 
 	return addMonth;
@@ -35,8 +37,8 @@ exports.dateAddMonth = function (month) {
 
 exports.dateAddMin = function (min) {
 	
-	var date = new Date();
-	var addMin = new Date (date);
+	let date = new Date();
+	let addMin = new Date (date);
 	addMin.setMinutes(date.getMinutes() + min);
     
     return addMin;

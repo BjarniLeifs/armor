@@ -1,30 +1,32 @@
-var exports = module.exports = {};
+"use strict";
+
+//let exports = module.exports = {};
 /* Declare of bcrypt model, it is for salt and hasing information. Security model. */
-var bcrypt = require('bcryptjs');
+let bcrypt = require('bcryptjs');
 
 /* Declare nodemailer  to send emails */
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
+let nodemailer = require('nodemailer');
+let smtpTransport = require('nodemailer-smtp-transport');
 /*
  Declare of jwt (Json web token), used for client and server for authanticating user 
  This is done for security feature.. other method that can be used = sessions.
 */
-var jwt = require('jsonwebtoken');
-//var jwts = require('jwt-simple');
+let jwt = require('jsonwebtoken');
+//let jwts = require('jwt-simple');
 /* Getting secrets config file. */
-var config = require('../config/configuration');
-var email = require('./../config/mailOption');
-var service = require('./../library/dbLibrary');
+let config = require('../config/configuration');
+let email = require('./../config/mailOption');
+let service = require('./../library/dbLibrary');
 
 
 /* register new user */
 exports.register = function (req, cb) {
 	bcrypt.genSalt(10, function (err, salt) {
 	    bcrypt.hash(req.body.password, salt, function(err, hash) {
-			var stringAdd = 'INSERT INTO users (username, name, email, hash)';
+			let stringAdd = 'INSERT INTO users (username, name, email, hash)';
 				stringAdd +='  VALUES($1, $2, $3, $4) returning *';
 				// Defining values to insert 
-				var value = [req.body.username, req.body.name, 
+				let value = [req.body.username, req.body.name, 
 							req.body.email, hash];
 				// Calling postService to add values with string constrains 
 				service.queryStringValue(stringAdd, value, function (err, results) {
@@ -44,8 +46,8 @@ exports.setPassword = function (object, cb) {
 	//console.log(password);
 	bcrypt.genSalt(10, function(err, salt) {
 	    bcrypt.hash(object.password, salt, function (err, hash) {							
-			var stringAdd 	= 'UPDATE users SET reset_token = ($1), token_expired = ($2), hash = ($3) WHERE id = ($4) '; 
-			var value 		= [null, null, hash, object.id]; 
+			let stringAdd 	= 'UPDATE users SET resettoken = ($1), tokenexpired = ($2), hash = ($3) WHERE id = ($4) '; 
+			let value 		= [null, null, hash, object.id]; 
 			service.queryStringValue(stringAdd, value, function (err, results) {
 						if (results) {
 							return cb(true);
@@ -69,15 +71,15 @@ exports.validPassword = function (password, object, cb) {
 /* Change password if user needs to change it for any reson. */
 exports.changePassword = function (object) {
 	/* Set new object with right information */
-	var checkobject = {
+	let checkobject = {
 		hash : object.hash
 	};
 	/* validate if everything is okei */
 	if (validPassword(object.oldPassword, checkobject)) {
 		/* Get new hash and salt */
-		var setPass = setPassword(object.newPassword);
+		let setPass = setPassword(object.newPassword);
 		/* Populate return object with new data. (new salt and hash) */
-		var returnObject = {
+		let returnObject = {
 			username: object.username,
 			hash 	: setPass
 		};	
@@ -95,10 +97,10 @@ exports.changePassword = function (object) {
 */
 exports.generateJWT = function (object) {
 	/* Set expirateion to 4 days. */
-	var today = new Date();
-	var exp = new Date(today);
+	let today = new Date();
+	let exp = new Date(today);
 	exp.setDate(today.getDate() + 4);
-	var scopes = [];
+	let scopes = [];
 
 		
 	scopes.push('user');
@@ -124,7 +126,7 @@ exports.generateJWT = function (object) {
 /* Just used to reset password and store this token */
 exports.generateResetJWT = function (object) {
 	/* Set expirateion to 1 hour. */
-	var expTime = Date.now() + 3600000; 
+	let expTime = Date.now() + 3600000; 
 
 	return jwt.sign({
 		/* 
@@ -141,10 +143,10 @@ exports.generateResetJWT = function (object) {
 
 exports.decodeJWT = function (req) {
 	//console.log('header i helper ' + req.headers.authorization);
-	var token = req.headers.authorization;
+	let token = req.headers.authorization;
 	token2 = token.substring(7);
 	//console.log("token 2 " + token2);
-	var decoded = jwt.verify(token2, config.secret);
+	let decoded = jwt.verify(token2, config.secret);
 	//console.log("decode i helper " + decoded.id + ' ' + decoded.username);
 	return decoded;
 };
@@ -154,7 +156,7 @@ exports.decodeJWT = function (req) {
 /* After generate token this is used to send e-mail to user with token. */
 exports.sendResetPassEmail = function (user, token, req) {
 	/* Defining the transporter to send email with configureation */
-	var transporter = nodemailer.createTransport(smtpTransport({
+	let transporter = nodemailer.createTransport(smtpTransport({
 		    host: email.smtpHost,
 		    port: email.smtpPort,
 	   		auth: {
@@ -163,7 +165,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 	    	}
 		}));
 	/* Structor for the e-mail to be sent. */
-	var mailOptions = {
+	let mailOptions = {
 		to: user.email,
 		from: email.emailUser,
 		subject: ''+email.emailSubject + user.name + email.projectName+'',
@@ -182,7 +184,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
 exports.confirmPassReset = function (user, req) {
-	var transporter = nodemailer.createTransport(smtpTransport({
+	let transporter = nodemailer.createTransport(smtpTransport({
 		    host: email.smtpHost,
 		    port: email.smtpPort,
 	   		auth: {
@@ -191,7 +193,7 @@ exports.confirmPassReset = function (user, req) {
 	    	}
 		})
 	);
-	var mailOptions = {
+	let mailOptions = {
 		to: user.email,
 		from: config.emailUser,
 		subject: '' + email.emailSubject + user.name + email.projectName +'',
