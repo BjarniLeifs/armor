@@ -27,7 +27,6 @@ exports.queryString = function (string, cb) {
 		/* Stream results back */
 		query.on('row', function (row) {
 			results.push(row);
-			//console.log(row);
 		});
 
 		/* close connection */
@@ -37,7 +36,6 @@ exports.queryString = function (string, cb) {
 				return cb(err, null);
 			} else {
 				done();
-				//console.log("done " + results);
 				return cb(err,results);
 			}
 		});
@@ -63,7 +61,6 @@ exports.queryStringValue = function (string, value, cb) {
 		/* Stream results back */
 		query.on('row', function (row) {
 			results.push(row);
-			//console.log(row);
 		});
 
 		/* close connection */
@@ -73,7 +70,6 @@ exports.queryStringValue = function (string, value, cb) {
 				return cb(err, null);
 			} else {
 				done();
-				//console.log("done " + results);
 				return cb(err,results);
 			}
 		});

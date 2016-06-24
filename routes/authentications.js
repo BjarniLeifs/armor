@@ -6,9 +6,9 @@ let bcrypt = require('bcryptjs');
 /* Definging postgressSQL module */
 let pg = require('pg');
 /* Definging configuration of database config */
-let config = require('./../config/configuration');
+var config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-let connectionString = process.env.DATABASE_URL || config.connectionUrl;
+var connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
 
 let service  	= require('./../library/dbLibrary');
@@ -18,6 +18,7 @@ let authService = require('./../library/users');
 //Just for development
 
 router.get('/users', function (req, res, next) {
+
 	let table = 'users';
 	let string = 'SELECT * FROM ' +table;
 	helper = service.queryString(string, function (err, result) {
@@ -34,7 +35,6 @@ router.get('/users', function (req, res, next) {
 router.post('/register', function (req, res, next) {
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	let resUser = [req.body.username];
-
 	/* Defining and looking for user with username before I can add to database.*/
 	let table = 'users';
 	let string = 'select * from ' + table +' WHERE username = ($1)';

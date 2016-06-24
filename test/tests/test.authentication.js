@@ -1,14 +1,12 @@
 var request     = require('supertest');
 var authservice = require('../library/authentication');
-var config      = require('./../../config/configuration');
+
 
 describe('Checking Authentication', function () {
   var server, userToken, user, failuser; 
-
-  beforeEach(function () {
+  before(function () { 
+    //process.env.NODE_ENV = 'testing';
     server = require('../../app');
-    server.set('DATABASE_URL', config.testConnectionUrl);
-
     userToken = authservice.getUserToken();
     user = {
       'username' : 'test',
@@ -21,11 +19,11 @@ describe('Checking Authentication', function () {
       'password' : 'tesst'
     };
   });
-
-  afterEach(function() {
-    server.set('DATABASE_URL', config.connectionUrl);
+/*
+  after(function() {
+    process.env.NODE_ENV = 'development';
   });
-  
+*/  
   it('Should register user', function testUserRegister (done) {
     request(server)
       .post('/auth/register')

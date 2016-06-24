@@ -103,7 +103,7 @@ module.exports = function(grunt) {
     },
     concurrent: {
       dev: {
-        tasks: ['concat_css','cssmin','jshint', 'concat', 'uglify', 'nodemon', 'watch', 'mochaTest'],
+        tasks: ['concat_css','cssmin','jshint', 'concat', 'uglify', 'nodemon', 'watch'],
         options: {
           logConcurrentOutput: true
         }
@@ -126,6 +126,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', '', function () {
     var taskList = [
+      
       'concurrent',
       'concat_css',
       'cssmin',

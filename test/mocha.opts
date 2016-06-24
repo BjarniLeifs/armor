@@ -1,7 +1,6 @@
 --require ./test/configuration/common.js
 --recursive
 --reporter spec
---watch
 --ui tdd 
 --recursive
 --colors
