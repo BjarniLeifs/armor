@@ -29,7 +29,7 @@ exports.register = function (req, cb) {
 			// Calling postService to add values with string constrains 
 			service.queryStringValue(stringAdd, value, function (err, results) {
 					if (err) 
-						return cb(err, false)
+						return cb(err, false);
 					if (results) {
 						return cb(false, true);
 					} else {
