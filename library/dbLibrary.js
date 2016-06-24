@@ -1,15 +1,15 @@
 
 //let exports = module.exports = {};
 
-let pg = require('pg');
+const pg = require('pg');
 /* Definging configuration of database config */
-let config = require('./../config/configuration');
+const config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-let connectionString = process.env.DATABASE_URL ||  config.connectionUrl;
+const connectionString = process.env.DATABASE_URL ||  config.connectionUrl;
 
 /* Query to get all */
 exports.queryString = function (string, cb) {
-
+	"use strict";
 	let results = [];	
 		
 	pg.connect(connectionString, function (err, client, done) {
@@ -45,7 +45,7 @@ exports.queryString = function (string, cb) {
 };
 /* Query to get all with an value */
 exports.queryStringValue = function (string, value, cb) {
-
+	"use strict";
 	let results = [];	
 		
 	pg.connect(connectionString, function (err, client, done) {

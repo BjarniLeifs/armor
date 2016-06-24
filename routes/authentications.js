@@ -1,26 +1,23 @@
-
-
-let express = require('express');
-let router = express.Router();
-let bcrypt = require('bcryptjs');
+const express = require('express');
+const router = express.Router();
+const bcrypt = require('bcryptjs');
 /* Definging postgressSQL module */
-let pg = require('pg');
+const pg = require('pg');
 /* Definging configuration of database config */
-let config = require('./../config/configuration');
+const config = require('./../config/configuration');
 /* Defining connectionstring for the database */
-let connectionString = process.env.DATABASE_URL || config.connectionUrl;
+const connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
-
-let service  	= require('./../library/dbLibrary');
-let dateService = require('./../library/dates');
-let authService = require('./../library/users');
+const service  	= require('./../library/dbLibrary');
+const dateService = require('./../library/dates');
+const authService = require('./../library/users');
 
 //Just for development
-
 router.get('/users', function (req, res, next) {
+	"use strict";
 	let table = 'users';
 	let string = 'SELECT * FROM ' +table;
-	helper = service.queryString(string, function (err, result) {
+	service.queryString(string, function (err, result) {
 		if (result) {
 			return res.status(200).json(result);
 		} else {
@@ -32,6 +29,7 @@ router.get('/users', function (req, res, next) {
 
 /* function register for registering new users */
 router.post('/register', function (req, res, next) {
+	"use strict";
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	let resUser = [req.body.username];
 
@@ -62,6 +60,7 @@ router.post('/register', function (req, res, next) {
 
 /* function login checks if username is in the database and then authenticates password */
 router.post('/login', function (req, res, next) {
+	"use strict";
 	if (!req.body.username || !req.body.password) {
 		return res.status(400).json({message: 'Please fill out all fields!'});
 	}
@@ -90,6 +89,7 @@ router.post('/login', function (req, res, next) {
 
 /* Sends e-mail to user if requested of forgotten password with token */
 router.post('/forgotPassword', function (req, res, next) {
+	"use strict";
 	if (!req.body.email) {
 		return res.status(400).json({message: 'Please fill out your email!'});
 	}
@@ -134,6 +134,7 @@ router.post('/forgotPassword', function (req, res, next) {
 
 /* Get token from users after e-mail was sent to check if the right user, then okei to reset password */
 router.post('/reset/:token', function (req, res, next) {
+	"use strict";
 	let token = req.params.token;
 	if (!token) {
 		return res.status(400).json({message: 'Please provide token'});
