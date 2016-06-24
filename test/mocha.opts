@@ -1,0 +1,9 @@
+--require ./test/configuration/common.js
+--recursive
+--reporter spec
+--watch
+--ui tdd 
+--recursive
+--colors
+--timeout 60000
+--slow 300s
