@@ -10,14 +10,14 @@
 */
 
 exports.dateAndTimeNow = function () {
-	
+	"use strict";
 	let date = new Date();
 
     return date;
 };
 
 exports.dateAddYear = function (year) {
-
+	"use strict";
 	let date = new Date();
 	let addYear = new Date (date);
 	addYear.setFullYear(date.getFullYear() + year);
@@ -26,7 +26,7 @@ exports.dateAddYear = function (year) {
 };
 
 exports.dateAddMonth = function (month) {
-
+	"use strict";
 	let date = new Date();
 	let addMonth = new Date (date);
 	addMonth.setMonth(date.getMonth() + month);
@@ -35,7 +35,7 @@ exports.dateAddMonth = function (month) {
 };
 
 exports.dateAddMin = function (min) {
-	
+	"use strict";
 	let date = new Date();
 	let addMin = new Date (date);
 	addMin.setMinutes(date.getMinutes() + min);

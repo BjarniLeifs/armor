@@ -5,6 +5,7 @@ let _ = require('lodash');
 
 /* To check if person scopes (rights) */
 exports.Scopes = function (scopes) {
+  "use strict";
   return function (req, res, next) {
       /* Get from scope in request (req) payload. */
       let tokenScopes = req.payload.scopes;

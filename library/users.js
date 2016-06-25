@@ -2,25 +2,26 @@
 
 //let exports = module.exports = {};
 /* Declare of bcrypt model, it is for salt and hasing information. Security model. */
-let bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 
 /* Declare nodemailer  to send emails */
-let nodemailer = require('nodemailer');
-let smtpTransport = require('nodemailer-smtp-transport');
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
 /*
  Declare of jwt (Json web token), used for client and server for authanticating user 
  This is done for security feature.. other method that can be used = sessions.
 */
-let jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 //let jwts = require('jwt-simple');
 /* Getting secrets config file. */
-let config = require('../config/configuration');
-let email = require('./../config/mailOption');
-let service = require('./../library/dbLibrary');
+const config = require('../config/configuration');
+const email = require('./../config/mailOption');
+const service = require('./../library/dbLibrary');
 
 
 /* register new user */
 exports.register = function (req, cb) {
+	"use strict";
 	bcrypt.genSalt(10, function (err, salt) {
 	    bcrypt.hash(req.body.password, salt, function(err, hash) {
 			let stringAdd = 'INSERT INTO users (username, name, email, hash)';
@@ -45,6 +46,7 @@ exports.register = function (req, cb) {
 
 /* setPassword for user */
 exports.setPassword = function (object, cb) {
+	"use strict";
 	//console.log(password);
 	bcrypt.genSalt(10, function(err, salt) {
 	    bcrypt.hash(object.password, salt, function (err, hash) {							
@@ -67,6 +69,7 @@ exports.setPassword = function (object, cb) {
 
 /* Validating the password of user. */
 exports.validPassword = function (password, object, cb) {
+	"use strict";
 	//console.log(object);
 	bcrypt.compare(password, object.hash, function (err, res) {
     	return cb(res);
@@ -75,6 +78,7 @@ exports.validPassword = function (password, object, cb) {
 
 /* Change password if user needs to change it for any reson. */
 exports.changePassword = function (object) {
+	"use strict";
 	/* Set new object with right information */
 	let checkobject = {
 		hash : object.hash
@@ -101,6 +105,7 @@ exports.changePassword = function (object) {
  with id, usernamem scope and when it expires +
 */
 exports.generateJWT = function (object) {
+	"use strict";
 	/* Set expirateion to 4 days. */
 	let today = new Date();
 	let exp = new Date(today);
@@ -130,6 +135,7 @@ exports.generateJWT = function (object) {
 
 /* Just used to reset password and store this token */
 exports.generateResetJWT = function (object) {
+	"use strict";
 	/* Set expirateion to 1 hour. */
 	let expTime = Date.now() + 3600000; 
 
@@ -147,6 +153,7 @@ exports.generateResetJWT = function (object) {
 };
 
 exports.decodeJWT = function (req) {
+	"use strict";
 	//console.log('header i helper ' + req.headers.authorization);
 	let token = req.headers.authorization;
 	token2 = token.substring(7);
@@ -160,6 +167,7 @@ exports.decodeJWT = function (req) {
 
 /* After generate token this is used to send e-mail to user with token. */
 exports.sendResetPassEmail = function (user, token, req) {
+	"use strict";
 	/* Defining the transporter to send email with configureation */
 	let transporter = nodemailer.createTransport(smtpTransport({
 		    host: email.smtpHost,
@@ -189,6 +197,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
 exports.confirmPassReset = function (user, req) {
+	"use strict";
 	let transporter = nodemailer.createTransport(smtpTransport({
 		    host: email.smtpHost,
 		    port: email.smtpPort,
