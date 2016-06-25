@@ -5,7 +5,7 @@
   "scripts": {
     "start" : "mocha && grunt",
     "setup" : "npm install && createdb armor && createdb testarmor && psql -d armor -f sqlSchems/database.js && psql -d testarmor -f sqlSchems/database.js",
-    "maketables": "psql -d armor -f sqlSchems/database.js && psql -d testarmor -f sqlSchems/database.js",
+    "dbtables": "psql -d armor -f sqlSchems/database.js && psql -d testarmor -f sqlSchems/database.js",
   },
   "dependencies": {
     "bcryptjs": "^2.3.0",
