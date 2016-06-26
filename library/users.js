@@ -4,6 +4,7 @@
 /* Declare of bcrypt model, it is for salt and hasing information. Security model. */
 const bcrypt = require('bcryptjs');
 
+
 /* Declare nodemailer  to send emails */
 const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
