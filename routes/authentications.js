@@ -31,8 +31,6 @@ router.get('/users', function (req, res, next) {
 /* function register for registering new users */
 router.post('/register', function (req, res, next) {
 	"use strict";
-	console.log(config.connectionUrl);
-	console.log(process.env.NODE_ENV);
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	let resUser = [req.body.username];
 	/* Defining and looking for user with username before I can add to database.*/
