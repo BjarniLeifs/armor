@@ -94,6 +94,8 @@ requirejs.config({
 
 
 app.use('/auth',require('./routes/authentications'));
+app.use('/api',require('./routes/index'));
+app.use('/api',require('./routes/users'));
 
 /* Catch 404 and forward to error handler */
 app.use(function (req, res, next) {

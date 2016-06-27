@@ -7,6 +7,7 @@ var config = function () {
 				'secret' 		: 'length.over c0mpl3xity haha6p',
 				'payload' 		: 'payload',
 				'connectionUrl' : 'postgres://postgres:1234@localhost:5432/armor',
+				'addTestUserUrl': 'postgres://postgres:1234@localhost:5432/testarmor'
 			};
 
 		case 'production':
@@ -14,6 +15,7 @@ var config = function () {
 				'secret' 		: 'length.over c0mpl3xity haha6p',
 				'payload' 		: 'payload',
 				'connectionUrl' : 'postgres://postgres:1234@localhost:5432/armor',
+				'addTestUserUrl': 'postgres://postgres:1234@localhost:5432/testarmor'
 			};
 
 		case 'testing':
@@ -21,6 +23,7 @@ var config = function () {
 				'secret' 		: 'length.over c0mpl3xity haha6p',
 				'payload' 		: 'payload',
 				'connectionUrl' : 'postgres://postgres:1234@localhost:5432/testarmor',
+				'addTestUserUrl': 'postgres://postgres:1234@localhost:5432/testarmor'
 			};
 
 		default:
@@ -28,6 +31,7 @@ var config = function () {
 				'secret' 		: 'length.over c0mpl3xity haha6p',
 				'payload' 		: 'payload',
 				'connectionUrl' : 'postgres://postgres:1234@localhost:5432/armor',
+				'addTestUserUrl': 'postgres://postgres:1234@localhost:5432/testarmor'
 			};
 	}
 };

@@ -11,6 +11,16 @@ module.exports = function(grunt) {
         dest: 'public/main/myApp.js',
       }
     },
+    uglify: {
+      options: {
+        banner: '/*! Made on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      basic: {
+        files: {
+          'public/main/myApp.min.js': ['<%= concat.basic.dest %>']
+        }
+      }
+    },
     concat_css: {
       options: {
         banner: '/*! Made on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
@@ -28,16 +38,6 @@ module.exports = function(grunt) {
       site: {
         src: ['public/main/myApp.css'],
         dest: 'public/main/myApp.min.css'
-      }
-    },
-    uglify: {
-      options: {
-        banner: '/*! Made on <%= grunt.template.today("dd-mm-yyyy") %> */\n'
-      },
-      basic: {
-        files: {
-          'public/main/myApp.min.js': ['<%= concat.basic.dest %>']
-        }
       }
     },
     jshint: {
@@ -67,21 +67,49 @@ module.exports = function(grunt) {
         }
       }
     },
+    mochaTest: {
+      test: {
+        options: {
+          reporter: 'spec',
+          quiet: false, 
+          colors: true,
+          clearRequireCache: true 
+        },
+        src: ['test/**/**/*.js']
+      }
+    },
     watch: {
       js: {
         files: ['public/javascripts/**/*.js'],
-        tasks: ['concat:basic'],
+        tasks: ['concat:basic', 'uglify'],
         options: {
           livereload: true,
         }
       },
       css: {
-        files: ['public/stylesheets/less/**/*.less', 'public/stylesheets/css/**/*.css'],
-        tasks: ['less', 'concat_css'],
+        files: ['public/stylesheets/css/**/*.css'],
+        tasks: ['concat_css', 'cssmin'],
         options: {
-          nospawn: true
+          nospawn: false
         }
+      },
+      test_js: {
+        options: {
+          spawn: true,
+          interrupt: true,
+          debounceDelay: 250,
+        },
+        files: ['test/**/**/*.js'],
+        tasks: ['mochaTest']
+      },
+      js_hint: {
+        options: {
+          nospawn: false
+        },
+        files: ['app.js', 'gruntfile.js', 'routes/**/*.js', 'library/**/*.js', 'config/**/*.js', 'test/**/**/*.js'],
+        tasks: ['jshint']
       }
+
     },
     nodemon: {
       dev: {
@@ -89,28 +117,14 @@ module.exports = function(grunt) {
         ignore:  ['node_modules/**','bower_components/**','public/**']
       }
     },
-    mochaTest: {
-      test: {
-        options: {
-          reporter: 'spec',
-          captureFile: 'testResults.txt',
-          quiet: false, 
-          colors: true,
-          clearRequireCache: false 
-        },
-        src: ['test/**/**/*.js']
-      }
-    },
     concurrent: {
       dev: {
-        tasks: ['concat_css','cssmin','jshint', 'concat', 'uglify', 'nodemon', 'watch'],
+        tasks: ['watch:js', 'watch:css', 'watch:test_js', 'watch:js_hint', 'nodemon'],
         options: {
           logConcurrentOutput: true
         }
       }
     }
-    
-
   });
 
   grunt.loadNpmTasks('grunt-mocha-test');
@@ -126,16 +140,12 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', '', function () {
     var taskList = [
-      
-      'concurrent',
+      'concat:basic',
+      'uglify',
       'concat_css',
       'cssmin',
-      'jshint', 
-      'concat', 
-      'uglify', 
-      'nodemon', 
-      'watch', 
-      'mochaTest'
+      'jshint',
+      'concurrent'
     ];
     grunt.task.run(taskList);
   });
