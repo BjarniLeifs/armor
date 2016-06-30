@@ -8,12 +8,8 @@ exports.usernameInfo = function (username, cb) {
 
 	service.queryStringValueUser(string, value, function (err, results) {
 		if (err)
-			return cb(err, false);
-		if (results) {
-			return cb(false, results);
-		} else {
-			return cb(false, false);
-		}
-
+			return cb(err);
+		else  
+			return cb(results);
 	});
 };

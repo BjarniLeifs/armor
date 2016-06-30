@@ -67,13 +67,8 @@ exports.queryString = function (string, cb) {
     	);
 		/* Stream results back */
 		query.on('row', function (row) {
-			let object = {
-				id : row.id,
-				name : row.name,
-				email : row.email,
-				username : row.username
-			};
-			results.push(object);
+
+			results.push(row);
 		});
 
 		/* close connection */
@@ -108,7 +103,13 @@ exports.queryStringValueUser = function (string, value, cb) {
     	);
 		/* Stream results back */
 		query.on('row', function (row) {
-			results.push(row);
+			let object = {
+				id : row.id,
+				name : row.name,
+				email : row.email,
+				username : row.username
+			};
+			results.push(object);
 		});
 
 		/* close connection */

@@ -3,17 +3,19 @@ var authservice = require('../library/authentication');
 
 
 describe('Tests for Authentication', function () {
-  var server, userToken, user, failuser, registeruser; 
+
+  var server, userToken, user, failUser, registerUser, registarUserDb; 
   before(function () { 
     process.env.NODE_ENV = 'testing';
     server = require('../../app');
 
-    registeruser = {
+    registerUser = {
       'username' : 'register',
       'name'     : 'register',
       'email'    : 'test@test.is', 
       'password' : 'testing'
     };  
+
     user ={
       'username' : 'test',
       'name'     : 'test',
@@ -33,12 +35,12 @@ describe('Tests for Authentication', function () {
     process.env.NODE_ENV = 'development';
   });
   
-  it('Should register user', function testUserRegister (done) {
+  it('Should register user, get token and delete', function testUserRegister (done) {
     request(server)
       .post('/auth/register')
-      .send(registeruser)
+      .send(registerUser)
       .expect(200)
-      .end(function (err, ress) {
+      .end(function (err, res) {
         if (err) {
           done(err);
         } 
@@ -47,6 +49,7 @@ describe('Tests for Authentication', function () {
   });
   
   it('Should login user', function testUserLogin (done) {
+    registarUserDb = authservice.getUserInfo(registerUser.username);
     request(server)
       .post('/auth/login')
       .send(user)
