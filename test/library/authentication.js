@@ -1,7 +1,7 @@
 var exports = module.exports = {};
 
 var request = require('supertest');
-var users = require('../../library/users');
+const authService = require('./../../library/authentication');
 
 var http = require('http');
 

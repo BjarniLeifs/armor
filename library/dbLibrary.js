@@ -90,7 +90,7 @@ exports.queryString = function (string, cb) {
 };
 
 /* USER only, this is to exclude information from user table that are personal and sensitive! */
-exports.queryStringValue = function (string, value, cb) {
+exports.queryStringValueUser = function (string, value, cb) {
 	"use strict";
 	let results = [];	
 		

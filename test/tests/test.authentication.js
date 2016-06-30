@@ -2,12 +2,12 @@ var request     = require('supertest');
 var authservice = require('../library/authentication');
 
 
-describe('Checking Authentication', function () {
+describe('Tests for Authentication', function () {
   var server, userToken, user, failuser, registeruser; 
   before(function () { 
     process.env.NODE_ENV = 'testing';
     server = require('../../app');
-    userToken = authservice.getUserToken();
+
     registeruser = {
       'username' : 'register',
       'name'     : 'register',

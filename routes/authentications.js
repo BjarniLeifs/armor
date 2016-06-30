@@ -11,22 +11,10 @@ const connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
 const service  	= require('./../library/dbLibrary');
 const dateService = require('./../library/dates');
-const authService = require('./../library/users');
+const authService = require('./../library/authentication');
 
 //Just for development
-router.get('/users', function (req, res, next) {
-	"use strict";
-	let table = 'users';
-	let string = 'SELECT * FROM ' +table;
-	service.queryString(string, function (err, result) {
-		if (result) {
-			return res.status(200).json(result);
-		} else {
-			return res.status(400).json({message: 'Error running query to '+ table});
-		}
-	});
-	
-});
+
 
 /* function register for registering new users */
 router.post('/register', function (req, res, next) {
@@ -76,7 +64,7 @@ router.post('/login', function (req, res, next) {
 				authService.validPassword(req.body.password, result[0], function (callBack){
 					if (callBack) {
 						return res.status(200).json({token: authService.generateJWT(result[0])});
-					}  else {
+					} else {
 						return res.status(422).json({message: 'Incorrect password'});
 					}
 				});

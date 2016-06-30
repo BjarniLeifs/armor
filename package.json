@@ -8,6 +8,7 @@
     "global-win" :"npm install mocha nodemon grunt grunt-cli -g",
     "setup-mac": "npm install && createdb armor && createdb testarmor && psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql && node data/test/testuser.js",
     "dbtables": "psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql",
+    "add-testuser" : "node data/test/testuser.js",
     "test" : "mocha -w"
   },
   "dependencies": {

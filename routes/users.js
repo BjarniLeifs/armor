@@ -10,7 +10,7 @@ const connectionString = process.env.DATABASE_URL || config.connectionUrl;
 
 const service  	= require('./../library/dbLibrary');
 const dateService = require('./../library/dates');
-const authService = require('./../library/users');
+const authService = require('./../library/authentication');
 
 
 /* GET users listing. */
@@ -31,13 +31,13 @@ router.get('/users/users', function (req, res, next) {
 
 
 /* Delete user, this is only for the user himself, if not the same then nothing happens*/
-router.post('/users/deleteUser', function (req, res, next) {
-	if(!req.body.id) {
+router.delete('/users/user/:id', function (req, res, next) {
+	if(!req.params.id) {
 		return res.status(400).json({messgae : 'You have to provide id of user'});
 	}
-	if (req.body.id == req.payload.id) {
+	if (req.params.id == req.payload.id) {
 		let string = 'DELETE FROM users where id = ($1)';
-		let value = [token.id];
+		let value = [req.payload.id];
 		service.queryStringValue(string, value, function (err, result) {
 			if (err) {
 				return res.status(400).json({message: 'Error running query to '+ table});
@@ -50,5 +50,7 @@ router.post('/users/deleteUser', function (req, res, next) {
 	}
  
 });
+
+
 
 module.exports = router;
