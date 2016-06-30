@@ -9,11 +9,11 @@ const connectionString = process.env.DATABASE_URL ||  config.connectionUrl;
 
 
 /* This gets all only for users, this is to exlude hash and other personal info from the object*/
-exports.queryStringUser = function (string, cb) {
+exports.queryStringUser = (string, cb) => {
 	"use strict";
 	let results = [];	
 		
-	pg.connect(connectionString, function (err, client, done) {
+	pg.connect(connectionString, (err, client, done) => {
 		if (err) {
 			done(err);
 			return cb(err, null);
@@ -21,12 +21,12 @@ exports.queryStringUser = function (string, cb) {
 
 		/* SQL Query, select data */
 		let query = client.query(string,
-			function (err, result) {
+			(err, result) => {
         		done();
     		}
     	);
 		/* Stream results back */
-		query.on('row', function (row) {
+		query.on('row', (row) => {
 			let object = {
 				id : row.id,
 				name : row.name,
@@ -37,7 +37,7 @@ exports.queryStringUser = function (string, cb) {
 		});
 
 		/* close connection */
-		query.on('end', function () {
+		query.on('end', () => {
 			if (err) {
 				done();
 				return cb(err, null);
@@ -49,11 +49,11 @@ exports.queryStringUser = function (string, cb) {
 	});
 };
 /* Query to get all */
-exports.queryString = function (string, cb) {
+exports.queryString = (string, cb) => {
 	"use strict";
 	let results = [];	
 		
-	pg.connect(connectionString, function (err, client, done) {
+	pg.connect(connectionString, (err, client, done) => {
 		if (err) {
 			done(err);
 			return cb(err, null);
@@ -61,18 +61,18 @@ exports.queryString = function (string, cb) {
 
 		/* SQL Query, select data */
 		let query = client.query(string,
-			function (err, result) {
+			(err, result) => {
         		done();
     		}
     	);
 		/* Stream results back */
-		query.on('row', function (row) {
+		query.on('row', (row) => {
 
 			results.push(row);
 		});
 
 		/* close connection */
-		query.on('end', function () {
+		query.on('end', () => {
 			if (err) {
 				done();
 				return cb(err, null);
@@ -85,11 +85,11 @@ exports.queryString = function (string, cb) {
 };
 
 /* USER only, this is to exclude information from user table that are personal and sensitive! */
-exports.queryStringValueUser = function (string, value, cb) {
+exports.queryStringValueUser = (string, value, cb) => {
 	"use strict";
 	let results = [];	
 		
-	pg.connect(connectionString, function (err, client, done) {
+	pg.connect(connectionString, (err, client, done) => {
 		if (err) {
 			done(err);
 			return cb(err, null);
@@ -97,12 +97,12 @@ exports.queryStringValueUser = function (string, value, cb) {
 
 		/* SQL Query, select data */
 		let query = client.query(string, value,
-			function (err, result) {
+			(err, result) => {
         		done();
     		}
     	);
 		/* Stream results back */
-		query.on('row', function (row) {
+		query.on('row', (row) => {
 			let object = {
 				id : row.id,
 				name : row.name,
@@ -113,7 +113,7 @@ exports.queryStringValueUser = function (string, value, cb) {
 		});
 
 		/* close connection */
-		query.on('end', function () {
+		query.on('end', () => {
 			if (err) {
 				done();
 				return cb(err, null);
@@ -127,11 +127,11 @@ exports.queryStringValueUser = function (string, value, cb) {
 };
 
 /* Query to get all with an value */
-exports.queryStringValue = function (string, value, cb) {
+exports.queryStringValue = (string, value, cb) => {
 	"use strict";
 	let results = [];	
 		
-	pg.connect(connectionString, function (err, client, done) {
+	pg.connect(connectionString, (err, client, done) => {
 		if (err) {
 			done(err);
 			return cb(err, null);
@@ -139,17 +139,17 @@ exports.queryStringValue = function (string, value, cb) {
 
 		/* SQL Query, select data */
 		let query = client.query(string, value,
-			function (err, result) {
+			(err, result) => {
         		done();
     		}
     	);
 		/* Stream results back */
-		query.on('row', function (row) {
+		query.on('row', (row) => {
 			results.push(row);
 		});
 
 		/* close connection */
-		query.on('end', function () {
+		query.on('end', () => {
 			if (err) {
 				done();
 				return cb(err, null);

@@ -14,11 +14,12 @@ const authService = require('./../library/authentication');
 
 
 /* GET users listing. */
-router.get('/users/users', function (req, res, next) {
+router.get('/users/users', (req, res, next) => {
 	"use strict";
 	let table = 'users';
-	let string = 'SELECT * FROM ' +table;
-	service.queryStringUser(string, function (err, result) {
+	let string = 'SELECT * FROM ' + table;
+	
+	service.queryStringUser(string, (err, result) => {
 		if (result) {
 			return res.status(200).json(result);
 		} else {
@@ -31,14 +32,15 @@ router.get('/users/users', function (req, res, next) {
 
 
 /* Delete user, this is only for the user himself, if not the same then nothing happens*/
-router.delete('/users/user/:id', function (req, res, next) {
+router.delete('/users/user/:id', (req, res, next) => {
 	if(!req.params.id) {
 		return res.status(400).json({messgae : 'You have to provide id of user'});
 	}
 	if (req.params.id == req.payload.id) {
 		let string = 'DELETE FROM users where id = ($1)';
 		let value = [req.payload.id];
-		service.queryStringValue(string, value, function (err, result) {
+
+		service.queryStringValue(string, value, (err, result) => {
 			if (err) {
 				return res.status(400).json({message: 'Error running query to '+ table});
 			} else {
@@ -52,14 +54,15 @@ router.delete('/users/user/:id', function (req, res, next) {
 });
 
 /* Delete user, this is only for the user himself, if not the same then nothing happens*/
-router.delete('/users/user/:username', function (req, res, next) {
+router.delete('/users/user/:username', (req, res, next) => {
 	if(!req.params.username) {
 		return res.status(400).json({messgae : 'You have to provide id of user'});
 	}
 	if (req.params.username == req.payload.username) {
 		let string = 'DELETE FROM users where username = ($1)';
 		let value = [req.payload.username];
-		service.queryStringValue(string, value, function (err, result) {
+
+		service.queryStringValue(string, value, (err, result) => {
 			if (err) {
 				return res.status(400).json({message: 'Error running query to '+ table});
 			} else {

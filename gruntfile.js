@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = (grunt) => {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
@@ -138,7 +138,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-nodemon');
 
-  grunt.registerTask('default', '', function () {
+  grunt.registerTask('default', '', () => {
     var taskList = [
       'concat:basic',
       'uglify',

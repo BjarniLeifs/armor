@@ -21,17 +21,17 @@ const service = require('./../library/dbLibrary');
 
 
 /* register new user */
-exports.register = function (req, cb) {
+exports.register = (req, cb) => {
 	"use strict";
-	bcrypt.genSalt(10, function (err, salt) {
-	    bcrypt.hash(req.body.password, salt, function(err, hash) {
+	bcrypt.genSalt(10, (err, salt) => {
+	    bcrypt.hash(req.body.password, salt, (err, hash) => {
 			let stringAdd = 'INSERT INTO users (username, name, email, hash)';
 				stringAdd +='  VALUES($1, $2, $3, $4) returning *';
 				// Defining values to insert 
 				let value = [req.body.username, req.body.name, 
 							req.body.email, hash];
 				// Calling postService to add values with string constrains 
-			service.queryStringValue(stringAdd, value, function (err, results) {
+			service.queryStringValue(stringAdd, value, (err, results) => {
 					if (err) 
 						return cb(err, false);
 					if (results) {
@@ -46,14 +46,14 @@ exports.register = function (req, cb) {
 };
 
 /* setPassword for user */
-exports.setPassword = function (object, cb) {
+exports.setPassword = (object, cb) => {
 	"use strict";
 	//console.log(password);
-	bcrypt.genSalt(10, function(err, salt) {
-	    bcrypt.hash(object.password, salt, function (err, hash) {							
+	bcrypt.genSalt(10, (err, salt) => {
+	    bcrypt.hash(object.password, salt, (err, hash) => {							
 			let stringAdd 	= 'UPDATE users SET resettoken = ($1), tokenexpired = ($2), hash = ($3) WHERE id = ($4) '; 
 			let value 		= [null, null, hash, object.id]; 
-			service.queryStringValue(stringAdd, value, function (err, results) {
+			service.queryStringValue(stringAdd, value, (err, results) => {
 					if (err)
 						return cb(err, false);
 					if (results) {
@@ -69,16 +69,16 @@ exports.setPassword = function (object, cb) {
 
 
 /* Validating the password of user. */
-exports.validPassword = function (password, object, cb) {
+exports.validPassword = (password, object, cb) => {
 	"use strict";
 	//console.log(object);
-	bcrypt.compare(password, object.hash, function (err, res) {
+	bcrypt.compare(password, object.hash, (err, res) => {
     	return cb(res);
 	});
 };
 
 /* Change password if user needs to change it for any reson. */
-exports.changePassword = function (object) {
+exports.changePassword = (object) => {
 	"use strict";
 	/* Set new object with right information */
 	let checkobject = {
@@ -105,7 +105,7 @@ exports.changePassword = function (object) {
  Generating json web token for user.. exp = expire, returns token
  with id, usernamem scope and when it expires +
 */
-exports.generateJWT = function (object) {
+exports.generateJWT = (object) => {
 	"use strict";
 	/* Set expirateion to 4 days. */
 	let today = new Date();
@@ -134,7 +134,7 @@ exports.generateJWT = function (object) {
 };
 
 /* Just used to reset password and store this token */
-exports.generateResetJWT = function (object) {
+exports.generateResetJWT = (object) => {
 	"use strict";
 	/* Set expirateion to 1 hour. */
 	let expTime = Date.now() + 3600000; 
@@ -152,7 +152,7 @@ exports.generateResetJWT = function (object) {
 	config.secret);
 };
 
-exports.decodeJWT = function (req) {
+exports.decodeJWT = (req) => {
 	"use strict";
 	//console.log('header i helper ' + req.headers.authorization);
 	let token = req.headers.authorization;
@@ -167,7 +167,7 @@ exports.decodeJWT = function (req) {
 
 
 /* After generate token this is used to send e-mail to user with token. */
-exports.sendResetPassEmail = function (user, token, req) {
+exports.sendResetPassEmail = (user, token, req) => {
 	"use strict";
 	/* Defining the transporter to send email with configureation */
 	let transporter = nodemailer.createTransport(smtpTransport({
@@ -187,7 +187,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 			email.http + req.headers.host + email.injectUrl + token.token + ' \n\n' + email.regards +''
 	};
 	/* Sending e-mail to user, error checking or send. */
-	transporter.sendMail(mailOptions, function (err, res) {
+	transporter.sendMail(mailOptions, (err, res) => {
 		if (err) {
 			return err;
 		} else {
@@ -197,7 +197,7 @@ exports.sendResetPassEmail = function (user, token, req) {
 };
 
 /* Same as other above, however this is only sent to confirm that everything went well or not. */
-exports.confirmPassReset = function (user, req) {
+exports.confirmPassReset = (user, req) => {
 	"use strict";
 	let transporter = nodemailer.createTransport(smtpTransport({
 		    host: email.smtpHost,
@@ -214,7 +214,7 @@ exports.confirmPassReset = function (user, req) {
 		subject: '' + email.emailSubject + user.name + email.projectName +'',
 		text: '' + email.greeting + user.name + email.contentMailReportChangePass + email.regards +''
 	};
-	transporter.sendMail(mailOptions, function (err, res) { 
+	transporter.sendMail(mailOptions, (err, res) => { 
 		if (err) {
 			return err;
 		} else {

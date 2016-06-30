@@ -17,7 +17,7 @@ const authService = require('./../library/authentication');
 
 
 /* function register for registering new users */
-router.post('/register', function (req, res, next) {
+router.post('/register', (req, res, next) => {
 	"use strict";
 	/* USERNAME should be lowerCASE! to ensure we get unique names at all times. */
 	let resUser = [req.body.username];
@@ -26,9 +26,9 @@ router.post('/register', function (req, res, next) {
 	let string = 'select * from ' + table +' WHERE username = ($1)';
 	//Calling for that user if exist it prompt the result else insert into database. 
 	service.queryStringValue(string, resUser, 
-		function (err, result) {
+		(err, result) => {
 			if (result.length < 1) {
-				authService.register(req, function (err, results) {
+				authService.register(req, (err, results) => {
 					if(err) {
 						return res.status(400).json({message: 'Error running query'});
 					}
@@ -47,7 +47,7 @@ router.post('/register', function (req, res, next) {
 });
 
 /* function login checks if username is in the database and then authenticates password */
-router.post('/login', function (req, res, next) {
+router.post('/login', (req, res, next) => {
 	"use strict";
 	if (!req.body.username || !req.body.password) {
 		return res.status(400).json({message: 'Please fill out all fields!'});
@@ -55,13 +55,13 @@ router.post('/login', function (req, res, next) {
 	let table = 'users';
 	let string ='SELECT * FROM '+ table + ' WHERE UPPER(username) = UPPER($1)';
 	let value = [req.body.username];
-	service.queryStringValue(string, value, function (err, result) {
+	service.queryStringValue(string, value, (err, result) => {
 		if (err) {
 			return res.status(400).json({message: 'Error running query to '+ table});
 		} else {
 			if (result[0] !== undefined) {
 				// Check password agains salt
-				authService.validPassword(req.body.password, result[0], function (callBack){
+				authService.validPassword(req.body.password, result[0], (callBack) => {
 					if (callBack) {
 						return res.status(200).json({token: authService.generateJWT(result[0])});
 					} else {
@@ -76,7 +76,7 @@ router.post('/login', function (req, res, next) {
 });
 
 /* Sends e-mail to user if requested of forgotten password with token */
-router.post('/forgotPassword', function (req, res, next) {
+router.post('/forgotPassword', (req, res, next) => {
 	"use strict";
 	if (!req.body.email) {
 		return res.status(400).json({message: 'Please fill out your email!'});
@@ -85,7 +85,7 @@ router.post('/forgotPassword', function (req, res, next) {
 	let string ='SELECT * FROM '+ table + ' WHERE email = ($1)';
 	let value = [req.body.email];
 
-	service.queryStringValue(string, value, function (err, result) {
+	service.queryStringValue(string, value, (err, result) => {
 		if (err) {
 			return res.status(400).json({message: 'Error running query to '+ table});
 		} else {
@@ -100,11 +100,11 @@ router.post('/forgotPassword', function (req, res, next) {
 				let stringUpdate = 'UPDATE users SET resettoken = ($1), tokenexpired = ($2) WHERE id = ($3)';
 				let valueUpdate = [newToken.token, newToken.tokenExpire, objectResult.id];
 				
-				service.queryStringValue(stringUpdate, valueUpdate, function (err, result) {
+				service.queryStringValue(stringUpdate, valueUpdate, (err, result) => {
 					if (err) {
 						return res.status(400).json({message: 'Error running query'});
 					} else {
-						authService.sendResetPassEmail(objectResult, newToken, req, function (err) {
+						authService.sendResetPassEmail(objectResult, newToken, req, (err) => {
 							if (err) {
 								return res.status(400).json({message: 'Error when sending mail.'});
 							} 
@@ -121,7 +121,7 @@ router.post('/forgotPassword', function (req, res, next) {
 });	
 
 /* Get token from users after e-mail was sent to check if the right user, then okei to reset password */
-router.post('/reset/:token', function (req, res, next) {
+router.post('/reset/:token', (req, res, next) => {
 	"use strict";
 	let token = req.params.token;
 	if (!token) {
@@ -132,7 +132,7 @@ router.post('/reset/:token', function (req, res, next) {
 	}
 	if (req.body.password === req.body.confirmPassword) {
 		let results = {};
-		pg.connect(connectionString, function (err, client, done) {
+		pg.connect(connectionString, (err, client, done) => {
 			if (err) {
 				done(err);
 				return res.status(400).json({message: 'error fetching client from pool'});
@@ -140,13 +140,13 @@ router.post('/reset/:token', function (req, res, next) {
 
 			/* SQL Query, select data */
 			let query = client.query('SELECT * FROM users WHERE reset_token = ($1)', [token],
-				function (err, result) {
+				(err, result) => {
 					done();
 				}
 			);
 
 			/* Stream results back */ 
-			query.on('row', function (row) {
+			query.on('row', (row) => {
 				results = {
 					id 		 	: row.id,
 					username 	: row.username,
@@ -159,7 +159,7 @@ router.post('/reset/:token', function (req, res, next) {
 			});
 
 			/* close connection */
-			query.on('end', function () {		
+			query.on('end', () => {		
 				let today = dateService.dateAddMin(0);
 
 				if (err) {
@@ -169,7 +169,7 @@ router.post('/reset/:token', function (req, res, next) {
 					if (results.token === token) {
 						if (today <= results.tokenExpire) {
 							
-							authService.setPassword(results, function (err, check) {
+							authService.setPassword(results, (err, check) => {
 								done();
 								if(err) {
 									return res.status(400).json({message: 'Error running query'});

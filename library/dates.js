@@ -9,14 +9,14 @@
 	and so on 
 */
 
-exports.dateAndTimeNow = function () {
+exports.dateAndTimeNow = () => {
 	"use strict";
 	let date = new Date();
 
     return date;
 };
 
-exports.dateAddYear = function (year) {
+exports.dateAddYear = (year) => {
 	"use strict";
 	let date = new Date();
 	let addYear = new Date (date);
@@ -25,7 +25,7 @@ exports.dateAddYear = function (year) {
 	return addYear;
 };
 
-exports.dateAddMonth = function (month) {
+exports.dateAddMonth = (month) => {
 	"use strict";
 	let date = new Date();
 	let addMonth = new Date (date);
@@ -34,7 +34,7 @@ exports.dateAddMonth = function (month) {
 	return addMonth;
 };
 
-exports.dateAddMin = function (min) {
+exports.dateAddMin = (min) => {
 	"use strict";
 	let date = new Date();
 	let addMin = new Date (date);

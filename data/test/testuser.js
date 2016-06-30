@@ -21,14 +21,14 @@ register(user);
 /* register new user */
 function register (req) {
 	"use strict";
-	bcrypt.genSalt(10, function (err, salt) {
-	    bcrypt.hash(req.password, salt, function(err, hash) {
+	bcrypt.genSalt(10, (err, salt) => {
+	    bcrypt.hash(req.password, salt, (err, hash) => {
 			let stringAdd = 'INSERT INTO users (username, name, email, hash)';
 				stringAdd +='  VALUES($1, $2, $3, $4) returning *';
 				// Defining values to insert 
 			let value = [req.username, req.name, req.email, hash];	
 			
-			pg.connect(connectionString, function (err, client, done) {
+			pg.connect(connectionString, (err, client, done) => {
 				if (err) {
 					done(err);
 					console.log("Error from database " + err);
@@ -37,17 +37,17 @@ function register (req) {
 
 				/* SQL Query, select data */
 				let query = client.query(stringAdd, value,
-					function (err, result) {
+					(err, result) => {
 		        		done();
 
 		    		}
 		    	);
 				/* Stream results back */
-				query.on('row', function (row) {
+				query.on('row', (row) => {
 				});
 
 				/* close connection */
-				query.on('end', function () {
+				query.on('end', () => {
 					if (err) {
 						done();
 						console.log("Error from database" + err);

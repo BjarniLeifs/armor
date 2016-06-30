@@ -4,7 +4,7 @@ const productionDb 	= 'postgres://postgres:1234@localhost:5432/armor';
 const developmentDb = 'postgres://postgres:1234@localhost:5432/armor';
 const testingDb 	= 'postgres://postgres:1234@localhost:5432/testarmor';
 /* /config.js */
-const config = function () { 
+const config = () => { 
 	switch(process.env.NODE_ENV) {
 		case 'development':
 			return {
@@ -40,4 +40,4 @@ const config = function () {
 	}
 };
 
-module.exports = new config();  
+module.exports = config();  
