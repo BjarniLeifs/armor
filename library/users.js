@@ -128,7 +128,6 @@ exports.generateJWT = function (object) {
 		username: object.username,
 		name 	: object.name,	
 		scopes  : scopes,
-		imageurl: object.imageurl,
 		exp 	: parseInt(exp.getTime() /1000)
 	}, 
 	config.secret);
@@ -157,7 +156,8 @@ exports.decodeJWT = function (req) {
 	"use strict";
 	//console.log('header i helper ' + req.headers.authorization);
 	let token = req.headers.authorization;
-	token2 = token.substring(7);
+	console.log(token);
+	let token2 = token.substring(7);
 	//console.log("token 2 " + token2);
 	let decoded = jwt.verify(token2, config.secret);
 	//console.log("decode i helper " + decoded.id + ' ' + decoded.username);
