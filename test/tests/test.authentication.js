@@ -1,14 +1,29 @@
 var request     = require('supertest');
 var authservice = require('../library/authentication');
 
+/*
+var user1 = {
+  username      : 'remove1',
+  name      : 'remove1',
+  email       : 'remove1@armor.is',
+  password    : 'remove1'
+};
+var user2 = {
+  username      : 'remove2',
+  name      : 'remove2',
+  email       : 'remove2@armor.is',
+  password    : 'remove2'
+};
 
+*/
+authservice.loadData();
 describe('Tests for Authentication', function () {
 
   var server, userToken, user, failUser, registerUser, registarUserDb; 
   before(function () { 
     process.env.NODE_ENV = 'testing';
     server = require('../../app');
-
+    
     registerUser = {
       'username' : 'register',
       'name'     : 'register',
@@ -35,7 +50,7 @@ describe('Tests for Authentication', function () {
     process.env.NODE_ENV = 'development';
   });
   
-  it('Should register user, get token and delete', function testUserRegister (done) {
+  it('Should register user.', function testUserRegister (done) {
     request(server)
       .post('/auth/register')
       .send(registerUser)
@@ -48,7 +63,7 @@ describe('Tests for Authentication', function () {
       done();
   });
   
-  it('Should login user', function testUserLogin (done) {
+  it('Should login user.', function testUserLogin (done) {
     registarUserDb = authservice.getUserInfo(registerUser.username);
     request(server)
       .post('/auth/login')
@@ -61,7 +76,7 @@ describe('Tests for Authentication', function () {
       done();
   });
 
-  it('Should fail login user', function testUserLogin (done) {
+  it('Should fail login user.', function testUserLogin (done) {
     request(server)
       .post('/auth/login')
       .send(failUser)
