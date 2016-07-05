@@ -3,10 +3,15 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start" : "mocha && grunt",
-    "setup" : "npm install && createdb armor && createdb testarmor && psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql",
+    "start": "mocha && grunt",
+    "global-mac": "sudo npm install mocha nodemon grunt grunt-cli -g",
+    "global-win": "npm install mocha nodemon grunt grunt-cli -g",
+    "setup-mac": "npm install && createdb armor && createdb testarmor && psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql && node data/test/testuser.js",
     "dbtables": "psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql",
-    "sigzdb" : "psql -U postgres -d armor -f sqlSchems/database.sql && psql -U postgres -d testarmor -f sqlSchems/database.sql "
+    "add-testuser": "node data/test/testuser.js",
+    "test": "mocha -w",
+    "win-db" : "psql -U postgres -d armor -f sqlSchems/database.sql && psql -U postgres -d testarmor -f sqlSchems/database.sql"
+
   },
   "dependencies": {
     "bcryptjs": "^2.3.0",
@@ -25,7 +30,10 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "babel-eslint": "^6.1.0",
     "chai": "^3.5.0",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
     "grunt-concat-css": "*",
     "grunt-concurrent": "^2.3.0",
     "grunt-contrib-concat": "^1.0.1",
