@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "start" : "mocha && grunt",
-    "setup" : "npm install && createdb armor && createdb testarmor && psql -d armor -f sqlSchems/database.js && psql -d testarmor -f sqlSchems/database.js",
-    "dbtables": "psql -d armor -f sqlSchems/database.js && psql -d testarmor -f sqlSchems/database.js",
+    "setup" : "npm install && createdb armor && createdb testarmor && psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql",
+    "dbtables": "psql -d armor -f sqlSchems/database.sql && psql -d testarmor -f sqlSchems/database.sql",
+    "sigzdb" : "psql -U postgres -d armor -f sqlSchems/database.sql && psql -U postgres -d testarmor -f sqlSchems/database.sql "
   },
   "dependencies": {
     "bcryptjs": "^2.3.0",

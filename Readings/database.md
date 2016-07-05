@@ -23,3 +23,7 @@ For Windows:
 To restore the database to a new database use the following command. Nota verður -U postgres til að koma í veg fyrir að þurfa að stimpla inn password
 
 psql -U postgres -d nameofDatabase -f file.sql
+
+Or from pgAdmin console
+\i 'path/to/database/file/dump.sql'
+i.e. \i 'C:/Users/Lenovo/Desktop/armor/sqlSchems/database.sql'
